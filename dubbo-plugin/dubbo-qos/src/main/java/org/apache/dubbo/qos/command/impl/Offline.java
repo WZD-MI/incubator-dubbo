@@ -32,6 +32,9 @@ import org.apache.dubbo.registry.support.ProviderInvokerWrapper;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * 下线某服务
+ */
 @Cmd(name = "offline", summary = "offline dubbo", example = {
         "offline dubbo",
         "offline xx.xx.xxx.service"
@@ -59,7 +62,7 @@ public class Offline implements BaseCommand {
                         continue;
                     }
                     Registry registry = registryFactory.getRegistry(providerInvokerWrapper.getRegistryUrl());
-                    registry.unregister(providerInvokerWrapper.getProviderUrl());
+                    registry.unregister(providerInvokerWrapper.getProviderUrl());//从注册中心下线
                     providerInvokerWrapper.setReg(false);
                 }
             }

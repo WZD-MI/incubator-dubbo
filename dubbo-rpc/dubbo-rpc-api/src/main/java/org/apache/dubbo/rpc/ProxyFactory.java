@@ -53,6 +53,7 @@ public interface ProxyFactory {
      * @param type
      * @param url
      * @return invoker
+     * 获取到invoker,invoker的实质就是利用代理,代理接口后,在接口下边跑一个socket 的client
      */
     @Adaptive({Constants.PROXY_KEY})
     <T> Invoker<T> getInvoker(T proxy, Class<T> type, URL url) throws RpcException;

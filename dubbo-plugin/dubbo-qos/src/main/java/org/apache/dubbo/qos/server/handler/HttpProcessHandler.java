@@ -44,6 +44,8 @@ import io.netty.handler.codec.http.HttpVersion;
  * </ul>
  * <p>
  * will disconnect after execution finishes
+ *
+ * http 处理管理命令
  */
 public class HttpProcessHandler extends SimpleChannelInboundHandler<HttpRequest> {
 
@@ -53,7 +55,7 @@ public class HttpProcessHandler extends SimpleChannelInboundHandler<HttpRequest>
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, HttpRequest msg) throws Exception {
-        CommandContext commandContext = HttpCommandDecoder.decode(msg);
+        CommandContext commandContext = HttpCommandDecoder.decode(msg);//解码命令获取到实际的命令
         // return 404 when fail to construct command context
         if (commandContext == null) {
             log.warn("can not found commandContext url: " + msg.getUri());

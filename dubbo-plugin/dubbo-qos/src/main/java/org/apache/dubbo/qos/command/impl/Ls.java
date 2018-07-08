@@ -30,6 +30,9 @@ import org.apache.dubbo.registry.support.ProviderInvokerWrapper;
 import java.util.Collection;
 import java.util.Set;
 
+/**
+ * ls 列出有哪些service
+ */
 @Cmd(name = "ls", summary = "ls service", example = {
         "ls"
 })
@@ -43,6 +46,7 @@ public class Ls implements BaseCommand {
         return result.toString();
     }
 
+    //展示有哪些provider
     public String listProvider() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("As Provider side:\n");
@@ -65,6 +69,7 @@ public class Ls implements BaseCommand {
         return stringBuilder.toString();
     }
 
+    //展示有哪些consumer
     public String listConsumer() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("As Consumer side:\n");

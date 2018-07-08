@@ -122,7 +122,7 @@ public class DefaultFuture implements ResponseFuture {
             lock.lock();
             try {
                 while (!isDone()) {
-                    done.await(timeout, TimeUnit.MILLISECONDS);
+                    done.await(timeout, TimeUnit.MILLISECONDS);//这里等待, 收到信息后会signal
                     if (isDone() || System.currentTimeMillis() - start > timeout) {
                         break;
                     }

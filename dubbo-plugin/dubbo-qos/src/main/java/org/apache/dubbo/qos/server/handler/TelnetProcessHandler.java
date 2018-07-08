@@ -45,11 +45,11 @@ public class TelnetProcessHandler extends SimpleChannelInboundHandler<String> {
         if (StringUtils.isBlank(msg)) {
             ctx.writeAndFlush(QosProcessHandler.prompt);
         } else {
-            CommandContext commandContext = TelnetCommandDecoder.decode(msg);
+            CommandContext commandContext = TelnetCommandDecoder.decode(msg);//解码命令
             commandContext.setRemote(ctx.channel());
 
             try {
-                String result = commandExecutor.execute(commandContext);
+                String result = commandExecutor.execute(commandContext);//执行业务
                 if (StringUtils.isEquals(QosConstants.CLOSE, result)) {
                     ctx.writeAndFlush(getByeLabel()).addListener(ChannelFutureListener.CLOSE);
                 } else {

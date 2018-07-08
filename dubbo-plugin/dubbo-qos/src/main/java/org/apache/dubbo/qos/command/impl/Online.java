@@ -32,6 +32,9 @@ import org.apache.dubbo.registry.support.ProviderInvokerWrapper;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * 上线某服务
+ */
 @Cmd(name = "online", summary = "online dubbo", example = {
         "online dubbo",
         "online xx.xx.xxx.service"
@@ -60,7 +63,7 @@ public class Online implements BaseCommand {
                         continue;
                     }
                     Registry registry = registryFactory.getRegistry(providerInvokerWrapper.getRegistryUrl());
-                    registry.register(providerInvokerWrapper.getProviderUrl());
+                    registry.register(providerInvokerWrapper.getProviderUrl());//上线某服务
                     providerInvokerWrapper.setReg(true);
                 }
             }

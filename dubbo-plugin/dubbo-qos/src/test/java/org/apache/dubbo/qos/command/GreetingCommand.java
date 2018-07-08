@@ -19,7 +19,9 @@ package org.apache.dubbo.qos.command;
 
 import org.apache.dubbo.qos.command.annotation.Cmd;
 
-
+/**
+ * 打印下欢迎字符
+ */
 @Cmd(name = "greeting", summary = "greeting message", example = {"greeting dubbo",})
 public class GreetingCommand implements BaseCommand {
     @Override

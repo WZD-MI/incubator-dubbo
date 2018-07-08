@@ -50,6 +50,7 @@ public class QosProcessHandler extends ByteToMessageDecoder {
 
     @Override
     public void channelActive(final ChannelHandlerContext ctx) throws Exception {
+        //这里起一个schedule 不是为了效率,而是为了后边方便关闭,因为http 不需要输出这个欢迎词
         welcomeFuture = ctx.executor().schedule(new Runnable() {
 
             @Override
@@ -63,6 +64,13 @@ public class QosProcessHandler extends ByteToMessageDecoder {
         }, 500, TimeUnit.MILLISECONDS);
     }
 
+    /**
+     * 虽说就一个解码器,但到解码的时候,会根据magic code切换成不通的解码方式,可以是 telnet也可以是http
+     * @param ctx
+     * @param in
+     * @param out
+     * @throws Exception
+     */
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
         if (in.readableBytes() < 1) {
@@ -70,26 +78,28 @@ public class QosProcessHandler extends ByteToMessageDecoder {
         }
 
         // read one byte to guess protocol
-        final int magic = in.getByte(in.readerIndex());
+        final int magic = in.getByte(in.readerIndex());//支持两种编码  (http 或者  telnet)
 
         ChannelPipeline p = ctx.pipeline();
         p.addLast(new LocalHostPermitHandler(acceptForeignIp));
-        if (isHttp(magic)) {
+        if (isHttp(magic)) {//根据magic code 进行编码切换
             // no welcome output for http protocol
             if (welcomeFuture != null && welcomeFuture.isCancellable()) {
-                welcomeFuture.cancel(false);
+                welcomeFuture.cancel(false);//关闭欢迎词输出
             }
+            //添加http的编解码和业务处理
             p.addLast(new HttpServerCodec());
             p.addLast(new HttpObjectAggregator(1048576));
-            p.addLast(new HttpProcessHandler());
-            p.remove(this);
+            p.addLast(new HttpProcessHandler());//http 的业务处理handler
+            p.remove(this);//移除自己
         } else {
+            //添加telenet的编解码
             p.addLast(new LineBasedFrameDecoder(2048));
             p.addLast(new StringDecoder(CharsetUtil.UTF_8));
             p.addLast(new StringEncoder(CharsetUtil.UTF_8));
             p.addLast(new IdleStateHandler(0, 0, 5 * 60));
-            p.addLast(new TelnetProcessHandler());
-            p.remove(this);
+            p.addLast(new TelnetProcessHandler());//telnet 的业务处理handler
+            p.remove(this);//移除自己
         }
     }
 
