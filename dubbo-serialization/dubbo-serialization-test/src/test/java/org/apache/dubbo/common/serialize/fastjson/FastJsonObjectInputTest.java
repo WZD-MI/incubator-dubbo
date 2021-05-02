@@ -129,6 +129,13 @@ public class FastJsonObjectInputTest {
     }
 
     @Test
+    public void testReadObject2() throws IOException, ClassNotFoundException {
+        fastJsonObjectInput = new FastJsonObjectInput(new StringReader("{\"detailMessage\":\"exception\",\"stackTrace\":[],\"suppressedExceptions\":[]}"));
+        Object result = fastJsonObjectInput.readObject(Object.class);
+        System.out.println(result);
+    }
+
+    @Test
     public void testEmptyLine() throws IOException, ClassNotFoundException {
         Assertions.assertThrows(EOFException.class, () -> {
             fastJsonObjectInput = new FastJsonObjectInput(new StringReader(""));
