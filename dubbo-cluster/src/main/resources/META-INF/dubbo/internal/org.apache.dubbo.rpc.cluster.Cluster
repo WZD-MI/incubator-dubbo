@@ -5,6 +5,7 @@ failsafe=org.apache.dubbo.rpc.cluster.support.FailsafeCluster
 failback=org.apache.dubbo.rpc.cluster.support.FailbackCluster
 forking=org.apache.dubbo.rpc.cluster.support.ForkingCluster
 available=org.apache.dubbo.rpc.cluster.support.AvailableCluster
+ipport=org.apache.dubbo.rpc.cluster.support.IpPortCluster
 mergeable=org.apache.dubbo.rpc.cluster.support.MergeableCluster
 broadcast=org.apache.dubbo.rpc.cluster.support.BroadcastCluster
 zone-aware=org.apache.dubbo.rpc.cluster.support.registry.ZoneAwareCluster
