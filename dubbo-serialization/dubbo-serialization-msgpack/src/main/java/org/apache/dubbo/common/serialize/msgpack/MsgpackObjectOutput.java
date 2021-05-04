@@ -22,6 +22,7 @@ import org.apache.dubbo.common.serialize.ObjectOutput;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 
 import java.io.*;
+import java.util.Arrays;
 
 
 public class MsgpackObjectOutput implements ObjectOutput {
@@ -76,12 +77,13 @@ public class MsgpackObjectOutput implements ObjectOutput {
 
     @Override
     public void writeBytes(byte[] b) throws IOException {
-        writer.write(b);
+        writeObject(b);
     }
 
     @Override
     public void writeBytes(byte[] b, int off, int len) throws IOException {
-        writer.write(b, off, len);
+        byte[] d = Arrays.copyOfRange(b,off,off+len);
+        writeObject(d);
     }
 
     @Override

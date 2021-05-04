@@ -26,16 +26,13 @@ import java.io.*;
 import java.lang.reflect.Type;
 
 public class MsgpackObjectInput implements ObjectInput {
-    private final BufferedReader reader;
+
+    private final InputStream reader;
 
     private ObjectMapper om;
 
     public MsgpackObjectInput(InputStream in) {
-        this(new InputStreamReader(in));
-    }
-
-    public MsgpackObjectInput(Reader reader) {
-        this.reader = new BufferedReader(reader);
+        this.reader = in;
         om = new ObjectMapper(new MessagePackFactory());
     }
 
@@ -81,13 +78,12 @@ public class MsgpackObjectInput implements ObjectInput {
 
     @Override
     public byte[] readBytes() throws IOException {
-        return readLine().getBytes();
+        return read(byte[].class);
     }
 
     @Override
     public Object readObject() throws IOException, ClassNotFoundException {
-        String json = readLine();
-        return om.readValue(json, Object.class);
+        return om.readValue(this.reader, Object.class);
     }
 
     @Override
@@ -102,17 +98,8 @@ public class MsgpackObjectInput implements ObjectInput {
         return (T) PojoUtils.realize(value, cls, type);
     }
 
-    private String readLine() throws IOException {
-        String line = reader.readLine();
-        if (line == null || line.trim().length() == 0) {
-            throw new EOFException();
-        }
-        return line;
-    }
-
     private <T> T read(Class<T> cls) throws IOException {
-        String json = readLine();
-        return om.readValue(json, cls);
+        return om.readValue(this.reader, cls);
     }
 
     @Override
