@@ -27,11 +27,11 @@ import java.util.Arrays;
 
 public class MsgpackObjectOutput implements ObjectOutput {
 
-    private OutputStream writer;
+    private OutputStream out;
     private ObjectMapper om;
 
     public MsgpackObjectOutput(OutputStream out) {
-        this.writer = out;
+        this.out = out;
         om = new ObjectMapper(new MessagePackFactory());
     }
 
@@ -89,14 +89,14 @@ public class MsgpackObjectOutput implements ObjectOutput {
     @Override
     public void writeObject(Object obj) throws IOException {
         byte[] json = om.writeValueAsBytes(obj);
-        writer.write(json, 0, json.length);
-        writer.flush();
+        out.write(json, 0, json.length);
+        out.flush();
         json = null;
     }
 
     @Override
     public void flushBuffer() throws IOException {
-        writer.flush();
+        out.flush();
     }
 
 }

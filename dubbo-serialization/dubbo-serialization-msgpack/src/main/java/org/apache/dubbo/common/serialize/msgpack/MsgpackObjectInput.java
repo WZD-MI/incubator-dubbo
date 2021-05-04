@@ -27,12 +27,12 @@ import java.lang.reflect.Type;
 
 public class MsgpackObjectInput implements ObjectInput {
 
-    private final InputStream reader;
+    private final InputStream in;
 
     private ObjectMapper om;
 
     public MsgpackObjectInput(InputStream in) {
-        this.reader = in;
+        this.in = in;
         om = new ObjectMapper(new MessagePackFactory());
     }
 
@@ -83,7 +83,7 @@ public class MsgpackObjectInput implements ObjectInput {
 
     @Override
     public Object readObject() throws IOException, ClassNotFoundException {
-        return om.readValue(this.reader, Object.class);
+        return om.readValue(this.in, Object.class);
     }
 
     @Override
@@ -99,7 +99,7 @@ public class MsgpackObjectInput implements ObjectInput {
     }
 
     private <T> T read(Class<T> cls) throws IOException {
-        return om.readValue(this.reader, cls);
+        return om.readValue(this.in, cls);
     }
 
     @Override
