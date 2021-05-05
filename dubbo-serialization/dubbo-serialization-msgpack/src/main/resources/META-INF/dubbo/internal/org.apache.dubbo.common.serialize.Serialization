@@ -1,1 +1,1 @@
-msgpack=org.apache.dubbo.common.serialize.gson.MsgpackSerialization
+msgpack=org.apache.dubbo.common.serialize.msgpack.MsgpackSerialization
