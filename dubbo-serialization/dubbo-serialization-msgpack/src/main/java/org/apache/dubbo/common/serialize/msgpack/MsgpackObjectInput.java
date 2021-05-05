@@ -17,9 +17,12 @@
 
 package org.apache.dubbo.common.serialize.msgpack;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.apache.dubbo.common.serialize.ObjectInput;
 import org.apache.dubbo.common.utils.PojoUtils;
+
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 
 import java.io.*;
@@ -34,6 +37,7 @@ public class MsgpackObjectInput implements ObjectInput {
     public MsgpackObjectInput(InputStream in) {
         this.in = in;
         om = new ObjectMapper(new MessagePackFactory());
+        om.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, false);
     }
 
     @Override

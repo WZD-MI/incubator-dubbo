@@ -18,7 +18,9 @@
 package org.apache.dubbo.common.serialize.msgpack;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.apache.dubbo.common.serialize.ObjectOutput;
+
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 
 import java.io.*;
@@ -82,16 +84,16 @@ public class MsgpackObjectOutput implements ObjectOutput {
 
     @Override
     public void writeBytes(byte[] b, int off, int len) throws IOException {
-        byte[] d = Arrays.copyOfRange(b,off,off+len);
+        byte[] d = Arrays.copyOfRange(b, off, off + len);
         writeObject(d);
     }
 
     @Override
     public void writeObject(Object obj) throws IOException {
-        byte[] json = om.writeValueAsBytes(obj);
-        out.write(json, 0, json.length);
+        byte[] bytes = om.writeValueAsBytes(obj);
+        out.write(bytes);
         out.flush();
-        json = null;
+//        bytes = null;
     }
 
     @Override

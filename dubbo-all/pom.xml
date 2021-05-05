@@ -31,6 +31,20 @@
         <skip_maven_deploy>false</skip_maven_deploy>
     </properties>
     <dependencies>
+
+        <dependency>
+            <groupId>org.msgpack</groupId>
+            <artifactId>msgpack-core</artifactId>
+            <version>0.8.22</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.msgpack</groupId>
+            <artifactId>jackson-dataformat-msgpack</artifactId>
+            <version>0.8.22</version>
+        </dependency>
+
+
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-config-api</artifactId>

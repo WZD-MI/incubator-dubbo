@@ -29,112 +29,123 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class MsgpackObjectOutputTest {
-    private MsgpackObjectOutput gsonJsonObjectOutput;
-    private MsgpackObjectInput gsonJsonObjectInput;
+    private MsgpackObjectOutput msgpackObjectOutput;
+    private MsgpackObjectInput msgpackObjectInput;
     private ByteArrayOutputStream byteArrayOutputStream;
     private ByteArrayInputStream byteArrayInputStream;
 
     @BeforeEach
     public void setUp() throws Exception {
         this.byteArrayOutputStream = new ByteArrayOutputStream();
-        this.gsonJsonObjectOutput = new MsgpackObjectOutput(byteArrayOutputStream);
+        this.msgpackObjectOutput = new MsgpackObjectOutput(byteArrayOutputStream);
     }
 
     @Test
     public void testWriteBool() throws IOException {
-        this.gsonJsonObjectOutput.writeBool(true);
+        this.msgpackObjectOutput.writeBool(true);
         this.flushToInput();
 
-        assertThat(gsonJsonObjectInput.readBool(), is(true));
+        assertThat(msgpackObjectInput.readBool(), is(true));
     }
 
     @Test
     public void testWriteShort() throws IOException {
-        this.gsonJsonObjectOutput.writeShort((short) 2);
+        this.msgpackObjectOutput.writeShort((short) 2);
         this.flushToInput();
 
-        assertThat(gsonJsonObjectInput.readShort(), is((short) 2));
+        assertThat(msgpackObjectInput.readShort(), is((short) 2));
     }
 
     @Test
     public void testWriteInt() throws IOException {
-        this.gsonJsonObjectOutput.writeInt(1);
+        this.msgpackObjectOutput.writeInt(1);
         this.flushToInput();
 
-        assertThat(gsonJsonObjectInput.readInt(), is(1));
+        assertThat(msgpackObjectInput.readInt(), is(1));
     }
 
     @Test
     public void testWriteLong() throws IOException {
-        this.gsonJsonObjectOutput.writeLong(1000L);
+        this.msgpackObjectOutput.writeLong(1000L);
         this.flushToInput();
 
-        assertThat(gsonJsonObjectInput.readLong(), is(1000L));
+        assertThat(msgpackObjectInput.readLong(), is(1000L));
     }
 
     @Test
     public void testWriteUTF() throws IOException {
-        this.gsonJsonObjectOutput.writeUTF("Pace Hasîtî 和平 Мир");
+        this.msgpackObjectOutput.writeUTF("Pace Hasîtî 和平 Мир");
         this.flushToInput();
 
-        assertThat(gsonJsonObjectInput.readUTF(), is("Pace Hasîtî 和平 Мир"));
+        assertThat(msgpackObjectInput.readUTF(), is("Pace Hasîtî 和平 Мир"));
+    }
+
+    @Test
+    public void testWriteUTF2() throws IOException {
+        this.msgpackObjectOutput.writeUTF("a");
+        this.msgpackObjectOutput.writeUTF("b");
+        this.msgpackObjectOutput.writeUTF("b");
+        this.flushToInput();
+        System.out.println(this.msgpackObjectInput.readUTF());
+        System.out.println(this.msgpackObjectInput.readUTF());
+        System.out.println(this.msgpackObjectInput.readUTF());
     }
 
 
     @Test
     public void testWriteFloat() throws IOException {
-        this.gsonJsonObjectOutput.writeFloat(1.88f);
+        this.msgpackObjectOutput.writeFloat(1.88f);
         this.flushToInput();
 
-        assertThat(this.gsonJsonObjectInput.readFloat(), is(1.88f));
+        assertThat(this.msgpackObjectInput.readFloat(), is(1.88f));
     }
 
     @Test
     public void testWriteDouble() throws IOException {
-        this.gsonJsonObjectOutput.writeDouble(1.66d);
+        this.msgpackObjectOutput.writeDouble(1.66d);
         this.flushToInput();
 
-        assertThat(this.gsonJsonObjectInput.readDouble(), is(1.66d));
+        assertThat(this.msgpackObjectInput.readDouble(), is(1.66d));
     }
 
     @Test
     public void testWriteBytes() throws IOException {
-        this.gsonJsonObjectOutput.writeBytes("hello".getBytes());
+        this.msgpackObjectOutput.writeBytes("hello".getBytes());
         this.flushToInput();
 
-        assertThat(this.gsonJsonObjectInput.readBytes(), is("hello".getBytes()));
+        assertThat(this.msgpackObjectInput.readBytes(), is("hello".getBytes()));
     }
 
     @Test
     public void testWriteBytesWithSubLength() throws IOException {
-        this.gsonJsonObjectOutput.writeBytes("hello".getBytes(), 2, 2);
+        this.msgpackObjectOutput.writeBytes("hello".getBytes(), 2, 2);
         this.flushToInput();
 
-        assertThat(this.gsonJsonObjectInput.readBytes(), is("ll".getBytes()));
+        assertThat(this.msgpackObjectInput.readBytes(), is("ll".getBytes()));
     }
 
     @Test
     public void testWriteByte() throws IOException {
-        this.gsonJsonObjectOutput.writeByte((byte) 123);
+        this.msgpackObjectOutput.writeByte((byte) 123);
         this.flushToInput();
 
-        assertThat(this.gsonJsonObjectInput.readByte(), is((byte) 123));
+        assertThat(this.msgpackObjectInput.readByte(), is((byte) 123));
     }
 
     @Test
     public void testWriteObject() throws IOException, ClassNotFoundException {
         Image image = new Image("http://dubbo.apache.org/img/dubbo_white.png", "logo", 300, 480, Image.Size.SMALL);
-        this.gsonJsonObjectOutput.writeObject(image);
+        this.msgpackObjectOutput.writeObject(image);
         this.flushToInput();
 
-        Image readObjectForImage = gsonJsonObjectInput.readObject(Image.class);
+        Image readObjectForImage = msgpackObjectInput.readObject(Image.class);
         assertThat(readObjectForImage, not(nullValue()));
         assertThat(readObjectForImage, is(image));
     }
 
     private void flushToInput() throws IOException {
-        this.gsonJsonObjectOutput.flushBuffer();
+        this.msgpackObjectOutput.flushBuffer();
         this.byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-        this.gsonJsonObjectInput = new MsgpackObjectInput(byteArrayInputStream);
+        this.msgpackObjectInput = new MsgpackObjectInput(byteArrayInputStream);
     }
 }
