@@ -84,13 +84,21 @@ public class MsgpackObjectOutputTest {
     public void testWriteUTF2() throws IOException {
         this.msgpackObjectOutput.writeUTF("a");
         this.msgpackObjectOutput.writeUTF("b");
-        this.msgpackObjectOutput.writeUTF("b");
+        this.msgpackObjectOutput.writeUTF("c");
         this.flushToInput();
-        System.out.println(this.msgpackObjectInput.readUTF());
-        System.out.println(this.msgpackObjectInput.readUTF());
-        System.out.println(this.msgpackObjectInput.readUTF());
+        assertThat(msgpackObjectInput.readUTF(), is("a"));
+        assertThat(msgpackObjectInput.readUTF(), is("b"));
+        assertThat(msgpackObjectInput.readUTF(), is("c"));
     }
 
+
+    @Test
+    public void testWriteThrowable() throws IOException, ClassNotFoundException {
+        Throwable throwable = new RuntimeException("error");
+        this.msgpackObjectOutput.writeThrowable(throwable);
+        this.flushToInput();
+        assertThat(msgpackObjectInput.readThrowable().getMessage(), is("error"));
+    }
 
     @Test
     public void testWriteFloat() throws IOException {
