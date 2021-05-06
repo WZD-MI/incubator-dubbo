@@ -93,7 +93,7 @@ public class MsgpackObjectOutput implements ObjectOutput {
         byte[] bytes = om.writeValueAsBytes(obj);
         out.write(bytes);
         out.flush();
-//        bytes = null;
+        bytes = null;
     }
 
     @Override
