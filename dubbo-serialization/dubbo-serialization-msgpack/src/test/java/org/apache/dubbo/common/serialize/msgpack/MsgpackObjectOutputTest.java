@@ -94,10 +94,12 @@ public class MsgpackObjectOutputTest {
 
     @Test
     public void testWriteThrowable() throws IOException, ClassNotFoundException {
-        Throwable throwable = new RuntimeException("error");
+        BizException throwable = new BizException("error");
         this.msgpackObjectOutput.writeThrowable(throwable);
         this.flushToInput();
-        assertThat(msgpackObjectInput.readThrowable().getMessage(), is("error"));
+        Throwable ex = msgpackObjectInput.readThrowable();
+        assertThat(ex.getMessage(), is("error"));
+        assertThat(ex.getClass(), is(BizException.class));
     }
 
     @Test

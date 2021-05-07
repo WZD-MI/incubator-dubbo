@@ -108,7 +108,7 @@ public class MsgpackObjectInput implements ObjectInput {
 
     @Override
     public Throwable readThrowable() throws IOException, ClassNotFoundException {
-        Object obj = readObject(Throwable.class);
-        return (Throwable) obj;
+        Class clazz = readObject(Class.class);
+        return (Throwable) readObject(clazz);
     }
 }
