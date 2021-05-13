@@ -26,7 +26,11 @@ import org.apache.dubbo.rpc.cluster.LoadBalance;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+/**
+ * UnicastClusterInvoker
+ */
 public class UnicastClusterInvoker<T> extends AbstractClusterInvoker<T> {
 
     public UnicastClusterInvoker(Directory<T> directory) {
@@ -41,7 +45,7 @@ public class UnicastClusterInvoker<T> extends AbstractClusterInvoker<T> {
         }
         return invokers.stream().filter(it -> {
             URL url = it.getUrl();
-            return address.getIp().equals(url.getIp()) && address.getPort() == url.getPort() && it.isAvailable();
-        }).findAny().orElseThrow(() -> new RpcException("No provider available in " + invokers)).invoke(invocation);
+            return address.getIp().equals(url.getIp()) && (address.getPort() == url.getPort()) && it.isAvailable();
+        }).findAny().orElseThrow(() -> new RpcException("No provider available in " + invokers.stream().map(it-> it.getUrl().getIp()+":"+it.getUrl().getPort()).collect(Collectors.joining(",")))).invoke(invocation);
     }
 }

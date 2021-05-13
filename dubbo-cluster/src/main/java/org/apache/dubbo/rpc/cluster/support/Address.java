@@ -17,7 +17,9 @@
 
 package org.apache.dubbo.rpc.cluster.support;
 
-public class Address {
+import java.io.Serializable;
+
+public class Address implements Serializable {
 
     private final String ip;
 
