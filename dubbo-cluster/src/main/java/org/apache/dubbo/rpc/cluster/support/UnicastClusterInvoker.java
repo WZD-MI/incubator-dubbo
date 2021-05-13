@@ -25,19 +25,23 @@ import org.apache.dubbo.rpc.cluster.Directory;
 import org.apache.dubbo.rpc.cluster.LoadBalance;
 
 import java.util.List;
+import java.util.Optional;
 
-public class IpPortClusterInvoker<T> extends AbstractClusterInvoker<T> {
+public class UnicastClusterInvoker<T> extends AbstractClusterInvoker<T> {
 
-    public IpPortClusterInvoker(Directory<T> directory) {
+    public UnicastClusterInvoker(Directory<T> directory) {
         super(directory);
     }
 
     @Override
     protected Result doInvoke(Invocation invocation, List<Invoker<T>> invokers, LoadBalance loadbalance) throws RpcException {
-        Address address = (Address) invocation.getObjectAttachment("address");
+        Address address = Address.class.cast(invocation.getObjectAttachment("address"));
+        if (!Optional.ofNullable(address).isPresent()) {
+            throw new RpcException("Address can not be empty");
+        }
         return invokers.stream().filter(it -> {
             URL url = it.getUrl();
-            return address.getIp().equals(url.getIp()) && address.getPort() == url.getPort();
+            return address.getIp().equals(url.getIp()) && address.getPort() == url.getPort() && it.isAvailable();
         }).findAny().orElseThrow(() -> new RpcException("No provider available in " + invokers)).invoke(invocation);
     }
 }

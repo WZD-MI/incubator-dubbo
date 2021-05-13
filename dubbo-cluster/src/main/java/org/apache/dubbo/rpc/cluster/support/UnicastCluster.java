@@ -22,15 +22,15 @@ import org.apache.dubbo.rpc.cluster.Cluster;
 import org.apache.dubbo.rpc.cluster.Directory;
 
 /**
- * IpPortCluster
+ * UnicastCluster
  */
-public class IpPortCluster implements Cluster {
+public class UnicastCluster implements Cluster {
 
-    public static final String NAME = "ipport";
+    public static final String NAME = "unicast";
 
     @Override
     public <T> Invoker<T> join(Directory<T> directory) throws RpcException {
-        return new IpPortClusterInvoker<>(directory);
+        return new UnicastClusterInvoker<>(directory);
     }
 
 }
