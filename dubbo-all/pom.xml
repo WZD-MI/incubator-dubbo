@@ -559,6 +559,13 @@
             <optional>true</optional>
         </dependency>
 
+
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-graalvm</artifactId>
+            <version>2.7.12-SNAPSHOT</version>
+        </dependency>
+
         <!-- Transitive dependencies -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -701,6 +708,7 @@
                                     <include>org.apache.dubbo:dubbo-metadata-report-nacos</include>
                                     <include>org.apache.dubbo:dubbo-metadata-report-failover</include>
                                     <include>org.apache.dubbo:dubbo-serialization-native-hession</include>
+                                    <include>org.apache.dubbo:dubbo-graalvm</include>
                                 </includes>
                             </artifactSet>
                             <transformers>

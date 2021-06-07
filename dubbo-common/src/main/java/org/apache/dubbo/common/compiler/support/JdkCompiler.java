@@ -37,6 +37,8 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -111,6 +113,17 @@ public class JdkCompiler extends AbstractCompiler {
 
     @Override
     public Class<?> doCompile(String name, String sourceCode) throws Throwable {
+        System.out.println("write code:" + name);
+        Files.write(Paths.get("/tmp/sources/" + name), sourceCode.getBytes());
+        try {
+            Class<?> res = Class.forName(name);
+            System.out.println("find class:" + name);
+            return res;
+        } catch (Throwable ex) {
+            //ignore
+            System.out.print("not find class:" + name);
+        }
+
         int i = name.lastIndexOf('.');
         String packageName = i < 0 ? "" : name.substring(0, i);
         String className = i < 0 ? name : name.substring(i + 1);
