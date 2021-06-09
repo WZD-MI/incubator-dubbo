@@ -560,11 +560,11 @@
         </dependency>
 
 
-        <dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-graalvm</artifactId>
-            <version>2.7.12-SNAPSHOT</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.dubbo</groupId>-->
+<!--            <artifactId>dubbo-graalvm</artifactId>-->
+<!--            <version>2.7.12-SNAPSHOT</version>-->
+<!--        </dependency>-->
 
         <!-- Transitive dependencies -->
         <dependency>

@@ -43,9 +43,7 @@ import org.apache.dubbo.registry.client.metadata.MetadataUtils;
 import org.apache.dubbo.rpc.Exporter;
 import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.Protocol;
-import org.apache.dubbo.rpc.Protocol$Adaptive;
 import org.apache.dubbo.rpc.ProxyFactory;
-import org.apache.dubbo.rpc.ProxyFactory$Adaptive;
 import org.apache.dubbo.rpc.cluster.ConfiguratorFactory;
 import org.apache.dubbo.rpc.model.ApplicationModel;
 import org.apache.dubbo.rpc.model.ServiceDescriptor;
@@ -127,13 +125,13 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
 
     private String serviceName;
 
-    private static final Protocol PROTOCOL = new Protocol$Adaptive();
+    private static final Protocol PROTOCOL = ExtensionLoader.getExtensionLoader(Protocol.class).getAdaptiveExtension();
 
     /**
      * A {@link ProxyFactory} implementation that will generate a exported service proxy,the JavassistProxyFactory is its
      * default implementation
      */
-    private static final ProxyFactory PROXY_FACTORY = new ProxyFactory$Adaptive();
+    private static final ProxyFactory PROXY_FACTORY = ExtensionLoader.getExtensionLoader(ProxyFactory.class).getAdaptiveExtension();
 
     /**
      * Whether the provider has been exported
@@ -462,7 +460,6 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
                 map.put(REVISION_KEY, revision);
             }
 
-//            String[] methods = Wrapper.getWrapper(interfaceClass).getMethodNames();
             String[] methods = Arrays.stream(interfaceClass.getMethods()).map(it->it.getName()).toArray(String[]::new);
             if (methods.length == 0) {
                 logger.warn("No method found in service interface " + interfaceClass.getName());

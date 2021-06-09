@@ -110,12 +110,6 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
     private static final Protocol REF_PROTOCOL = ExtensionLoader.getExtensionLoader(Protocol.class).getAdaptiveExtension();
 
     /**
-     * The {@link Cluster}'s implementation with adaptive functionality, and actually it will get a {@link Cluster}'s
-     * specific implementation who is wrapped with <b>MockClusterInvoker</b>
-     */
-    private static final Cluster CLUSTER = ExtensionLoader.getExtensionLoader(Cluster.class).getAdaptiveExtension();
-
-    /**
      * A {@link ProxyFactory} implementation that will generate a reference service's proxy,the JavassistProxyFactory is
      * its default implementation
      */
@@ -254,7 +248,9 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
                 map.put(REVISION_KEY, revision);
             }
 
-            String[] methods = Wrapper.getWrapper(interfaceClass).getMethodNames();
+//            String[] methods = Wrapper.getWrapper(interfaceClass).getMethodNames();
+
+            String[] methods = Arrays.stream(interfaceClass.getMethods()).map(it->it.getName()).toArray(String[]::new);
             if (methods.length == 0) {
                 logger.warn("No method found in service interface " + interfaceClass.getName());
                 map.put(METHODS_KEY, ANY_VALUE);

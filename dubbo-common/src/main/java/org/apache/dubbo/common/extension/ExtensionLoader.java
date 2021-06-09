@@ -17,6 +17,7 @@
 package org.apache.dubbo.common.extension;
 
 import org.apache.dubbo.common.URL;
+import org.apache.dubbo.common.compiler.Compiler;
 import org.apache.dubbo.common.config.Environment;
 import org.apache.dubbo.common.context.Lifecycle;
 import org.apache.dubbo.common.extension.support.ActivateComparator;
@@ -33,10 +34,8 @@ import org.apache.dubbo.common.utils.Holder;
 import org.apache.dubbo.common.utils.ReflectUtils;
 import org.apache.dubbo.common.utils.StringUtils;
 import org.apache.dubbo.config.context.ConfigManager;
-import org.apache.dubbo.event.DirectEventDispatcher;
 import org.apache.dubbo.event.EventDispatcher;
 import org.apache.dubbo.event.ParallelEventDispatcher;
-import org.apache.dubbo.rpc.Protocol;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -659,24 +658,6 @@ public class ExtensionLoader<T> {
     @SuppressWarnings("unchecked")
     private T createExtension(String name, boolean wrap) {
         Class<?> clazz = getExtensionClasses().get(name);
-//        if (clazz == null) {
-//            //throw findException(name);
-//            System.out.println("======>createExtension:" + name + ":" + wrap);
-//
-//            if (name.equals("config")) {
-//                return (T) configManager;
-//            }
-//
-//            if (name.equals("environment")) {
-//                return (T) environment;
-//            }
-//
-//            if (name.equals("repository")) {
-//
-//            }
-//
-//            return null;
-//        }
         try {
             T instance = (T) EXTENSION_INSTANCES.get(clazz);
             if (instance == null) {
@@ -720,7 +701,7 @@ public class ExtensionLoader<T> {
 
     private T injectExtension(T instance) {
 
-//        System.out.println("injectExtension:"+instance);
+        System.out.println("injectExtension:"+instance);
 
         if (objectFactory == null) {
             return instance;
@@ -1075,7 +1056,7 @@ public class ExtensionLoader<T> {
     private T createAdaptiveExtension() {
         try {
             System.out.println("createAdaptiveExtension");
-            if (type.equals(ExtensionFactory.class)) {
+            if (type.equals(ExtensionFactory.class) || type.equals(Compiler.class)) {
                 System.out.println("ExtensionFactory");
             }
             return injectExtension((T) getAdaptiveExtensionClass().newInstance());
