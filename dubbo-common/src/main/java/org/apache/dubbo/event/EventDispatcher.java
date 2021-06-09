@@ -61,6 +61,6 @@ public interface EventDispatcher extends Listenable<EventListener<?>> {
      * @return the default extension of {@link EventDispatcher}
      */
     static EventDispatcher getDefaultExtension() {
-        return ExtensionLoader.getExtensionLoader(EventDispatcher.class).getDefaultExtension();
+        return new ParallelEventDispatcher();
     }
 }

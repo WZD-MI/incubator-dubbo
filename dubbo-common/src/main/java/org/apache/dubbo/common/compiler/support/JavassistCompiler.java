@@ -19,6 +19,8 @@ package org.apache.dubbo.common.compiler.support;
 
 import javassist.CtClass;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,6 +42,18 @@ public class JavassistCompiler extends AbstractCompiler {
 
     @Override
     public Class<?> doCompile(String name, String source) throws Throwable {
+
+        System.out.println("--->write code:" + name);
+        Files.write(Paths.get("/tmp/sources/" + name), source.getBytes());
+        try {
+            Class<?> res = Class.forName(name);
+            System.out.println("find class:" + name);
+            return res;
+        } catch (Throwable ex) {
+            //ignore
+            System.out.println("not find class:" + name);
+        }
+
         CtClassBuilder builder = new CtClassBuilder();
         builder.setClassName(name);
 

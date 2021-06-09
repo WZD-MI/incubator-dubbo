@@ -80,7 +80,10 @@ public class AdaptiveClassCodeGenerator {
      * test if given type has at least one method annotated with <code>Adaptive</code>
      */
     private boolean hasAdaptiveMethod() {
-        return Arrays.stream(type.getMethods()).anyMatch(m -> m.isAnnotationPresent(Adaptive.class));
+        System.out.println("hasAdaptiveMethod:"+type);
+        return Arrays.stream(type.getMethods()).peek(it->{
+            System.out.println("------->"+it+":"+it.getAnnotations());
+        }).anyMatch(m -> m.isAnnotationPresent(Adaptive.class));
     }
 
     /**
@@ -89,7 +92,8 @@ public class AdaptiveClassCodeGenerator {
     public String generate() {
         // no need to generate adaptive class since there's no adaptive method found.
         if (!hasAdaptiveMethod()) {
-            throw new IllegalStateException("No adaptive method exist on extension " + type.getName() + ", refuse to create the adaptive class!");
+            System.out.println("No adaptive method exist on extension " + type.getName() + ", refuse to create the adaptive class!");
+            return "";
         }
 
         StringBuilder code = new StringBuilder();

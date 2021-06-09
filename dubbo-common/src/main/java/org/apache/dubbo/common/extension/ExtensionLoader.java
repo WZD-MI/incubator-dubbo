@@ -17,6 +17,7 @@
 package org.apache.dubbo.common.extension;
 
 import org.apache.dubbo.common.URL;
+import org.apache.dubbo.common.config.Environment;
 import org.apache.dubbo.common.context.Lifecycle;
 import org.apache.dubbo.common.extension.support.ActivateComparator;
 import org.apache.dubbo.common.extension.support.WrapperComparator;
@@ -31,12 +32,20 @@ import org.apache.dubbo.common.utils.ConfigUtils;
 import org.apache.dubbo.common.utils.Holder;
 import org.apache.dubbo.common.utils.ReflectUtils;
 import org.apache.dubbo.common.utils.StringUtils;
+import org.apache.dubbo.config.context.ConfigManager;
+import org.apache.dubbo.event.DirectEventDispatcher;
+import org.apache.dubbo.event.EventDispatcher;
+import org.apache.dubbo.event.ParallelEventDispatcher;
+import org.apache.dubbo.rpc.Protocol;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -146,9 +155,17 @@ public class ExtensionLoader<T> {
         objectFactory = (type == ExtensionFactory.class ? null : ExtensionLoader.getExtensionLoader(ExtensionFactory.class).getAdaptiveExtension());
     }
 
+
+    public ExtensionLoader() {
+        this.type = Object.class;
+        this.objectFactory = null;
+
+    }
+
     private static <T> boolean withExtensionAnnotation(Class<T> type) {
         return type.isAnnotationPresent(SPI.class);
     }
+
 
     @SuppressWarnings("unchecked")
     public static <T> ExtensionLoader<T> getExtensionLoader(Class<T> type) {
@@ -168,6 +185,7 @@ public class ExtensionLoader<T> {
             EXTENSION_LOADERS.putIfAbsent(type, new ExtensionLoader<T>(type));
             loader = (ExtensionLoader<T>) EXTENSION_LOADERS.get(type);
         }
+//        System.out.println("====>getExtensionLoader:" + type);
         return loader;
     }
 
@@ -290,7 +308,7 @@ public class ExtensionLoader<T> {
                     activateExtensionsMap.put(getExtensionClass(name), getExtension(name));
                 }
             }
-            if(!activateExtensionsMap.isEmpty()){
+            if (!activateExtensionsMap.isEmpty()) {
                 activateExtensions.addAll(activateExtensionsMap.values());
             }
         }
@@ -630,12 +648,35 @@ public class ExtensionLoader<T> {
         return new IllegalStateException(buf.toString());
     }
 
+
+    private ConfigManager configManager = new ConfigManager();
+
+    private EventDispatcher eventDispatcher = new ParallelEventDispatcher();
+
+
+    private org.apache.dubbo.common.config.Environment environment = new Environment();
+
     @SuppressWarnings("unchecked")
     private T createExtension(String name, boolean wrap) {
         Class<?> clazz = getExtensionClasses().get(name);
-        if (clazz == null) {
-            throw findException(name);
-        }
+//        if (clazz == null) {
+//            //throw findException(name);
+//            System.out.println("======>createExtension:" + name + ":" + wrap);
+//
+//            if (name.equals("config")) {
+//                return (T) configManager;
+//            }
+//
+//            if (name.equals("environment")) {
+//                return (T) environment;
+//            }
+//
+//            if (name.equals("repository")) {
+//
+//            }
+//
+//            return null;
+//        }
         try {
             T instance = (T) EXTENSION_INSTANCES.get(clazz);
             if (instance == null) {
@@ -678,6 +719,8 @@ public class ExtensionLoader<T> {
     }
 
     private T injectExtension(T instance) {
+
+//        System.out.println("injectExtension:"+instance);
 
         if (objectFactory == null) {
             return instance;
@@ -851,6 +894,7 @@ public class ExtensionLoader<T> {
 
     private void loadResource(Map<String, Class<?>> extensionClasses, ClassLoader classLoader,
                               java.net.URL resourceURL, boolean overridden, String... excludedPackages) {
+        System.out.println("------>loadResource:"+extensionClasses);
         try {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(resourceURL.openStream(), StandardCharsets.UTF_8))) {
                 String line;
@@ -900,6 +944,10 @@ public class ExtensionLoader<T> {
 
     private void loadClass(Map<String, Class<?>> extensionClasses, java.net.URL resourceURL, Class<?> clazz, String name,
                            boolean overridden) throws NoSuchMethodException {
+
+
+        System.out.println("###############>loadClass" + clazz + ":" + name);
+
         if (!type.isAssignableFrom(clazz)) {
             throw new IllegalStateException("Error occurred when loading extension class (interface: " +
                     type + ", class line: " + clazz.getName() + "), class "
@@ -1026,6 +1074,10 @@ public class ExtensionLoader<T> {
     @SuppressWarnings("unchecked")
     private T createAdaptiveExtension() {
         try {
+            System.out.println("createAdaptiveExtension");
+            if (type.equals(ExtensionFactory.class)) {
+                System.out.println("ExtensionFactory");
+            }
             return injectExtension((T) getAdaptiveExtensionClass().newInstance());
         } catch (Exception e) {
             throw new IllegalStateException("Can't create adaptive extension " + type + ", cause: " + e.getMessage(), e);
@@ -1034,6 +1086,9 @@ public class ExtensionLoader<T> {
 
     private Class<?> getAdaptiveExtensionClass() {
         getExtensionClasses();
+        if (type.equals(ExtensionFactory.class)) {
+            System.out.println("======>c:"+cachedAdaptiveClass);
+        }
         if (cachedAdaptiveClass != null) {
             return cachedAdaptiveClass;
         }
@@ -1041,10 +1096,36 @@ public class ExtensionLoader<T> {
     }
 
     private Class<?> createAdaptiveExtensionClass() {
+        System.out.println("createAdaptiveExtensionClass:"+type);
+
+        String name = generatePackageInfo()+"."+type.getSimpleName() + "$Adaptive";
+        try {
+            Class c = Class.forName(generatePackageInfo()+"."+type.getSimpleName() + "$Adaptive");
+            System.out.println("find class:"+name);
+            return c;
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
         String code = new AdaptiveClassCodeGenerator(type, cachedDefaultName).generate();
+
+        try {
+            System.out.println("------------>write code");
+            Files.write(Paths.get("/tmp/sources/"+name),code.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
         ClassLoader classLoader = findClassLoader();
         org.apache.dubbo.common.compiler.Compiler compiler = ExtensionLoader.getExtensionLoader(org.apache.dubbo.common.compiler.Compiler.class).getAdaptiveExtension();
         return compiler.compile(code, classLoader);
+    }
+
+
+    private static final String CODE_PACKAGE = "%s";
+
+    private String generatePackageInfo() {
+        return String.format(CODE_PACKAGE, type.getPackage().getName());
     }
 
     @Override
