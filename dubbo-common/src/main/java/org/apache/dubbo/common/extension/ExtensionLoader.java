@@ -657,7 +657,9 @@ public class ExtensionLoader<T> {
 
     @SuppressWarnings("unchecked")
     private T createExtension(String name, boolean wrap) {
-        Class<?> clazz = getExtensionClasses().get(name);
+        Map<String, Class<?>> classMap = getExtensionClasses();
+        System.out.println("createExtension:" + name + ":" + classMap);
+        Class<?> clazz = classMap.get(name);
         try {
             T instance = (T) EXTENSION_INSTANCES.get(clazz);
             if (instance == null) {
@@ -701,7 +703,7 @@ public class ExtensionLoader<T> {
 
     private T injectExtension(T instance) {
 
-        System.out.println("injectExtension:"+instance);
+        System.out.println("injectExtension:" + instance);
 
         if (objectFactory == null) {
             return instance;
@@ -875,7 +877,7 @@ public class ExtensionLoader<T> {
 
     private void loadResource(Map<String, Class<?>> extensionClasses, ClassLoader classLoader,
                               java.net.URL resourceURL, boolean overridden, String... excludedPackages) {
-        System.out.println("------>loadResource:"+extensionClasses);
+        System.out.println("------>loadResource:" + extensionClasses);
         try {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(resourceURL.openStream(), StandardCharsets.UTF_8))) {
                 String line;
@@ -1068,7 +1070,7 @@ public class ExtensionLoader<T> {
     private Class<?> getAdaptiveExtensionClass() {
         getExtensionClasses();
         if (type.equals(ExtensionFactory.class)) {
-            System.out.println("======>c:"+cachedAdaptiveClass);
+            System.out.println("======>c:" + cachedAdaptiveClass);
         }
         if (cachedAdaptiveClass != null) {
             return cachedAdaptiveClass;
@@ -1077,12 +1079,12 @@ public class ExtensionLoader<T> {
     }
 
     private Class<?> createAdaptiveExtensionClass() {
-        System.out.println("createAdaptiveExtensionClass:"+type);
+        System.out.println("createAdaptiveExtensionClass:" + type);
 
-        String name = generatePackageInfo()+"."+type.getSimpleName() + "$Adaptive";
+        String name = generatePackageInfo() + "." + type.getSimpleName() + "$Adaptive";
         try {
-            Class c = Class.forName(generatePackageInfo()+"."+type.getSimpleName() + "$Adaptive");
-            System.out.println("find class:"+name);
+            Class c = Class.forName(generatePackageInfo() + "." + type.getSimpleName() + "$Adaptive");
+            System.out.println("find class:" + name);
             return c;
         } catch (Throwable e) {
             e.printStackTrace();
@@ -1091,7 +1093,7 @@ public class ExtensionLoader<T> {
 
         try {
             System.out.println("------------>write code");
-            Files.write(Paths.get("/tmp/sources/"+name),code.getBytes());
+            Files.write(Paths.get("/tmp/sources/" + name), code.getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }
