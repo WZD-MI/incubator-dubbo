@@ -73,7 +73,8 @@ public abstract class AbstractProxyFactory implements ProxyFactory {
         }
 
         interfaces.add(invoker.getInterface());
-        interfaces.addAll(Arrays.asList(INTERNAL_INTERFACES));
+        //TODO $ 先这样把.这里有一个bug....得解下
+//        interfaces.addAll(Arrays.asList(INTERNAL_INTERFACES));
 
         return getProxy(invoker, interfaces.toArray(new Class<?>[0]));
     }
