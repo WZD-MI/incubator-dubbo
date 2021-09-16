@@ -18,12 +18,15 @@ package com.apache.dubbo.demo.graalvm.consumer;
 
 import org.apace.dubbo.graalvm.demo.DemoService;
 import org.apache.dubbo.config.ApplicationConfig;
+import org.apache.dubbo.config.ProtocolConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.bootstrap.DubboBootstrap;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 
 public class Application {
 
@@ -53,14 +56,28 @@ public class Application {
         m.put("proxy","jdk");
         applicationConfig.setParameters(m);
 
+
+        ProtocolConfig protocolConfig = new ProtocolConfig();
+        protocolConfig.setPort(5555);
+        protocolConfig.setTransporter("quic");
+
+
         bootstrap.application(applicationConfig)
                 .registry(new RegistryConfig("zookeeper://127.0.0.1:2181"))
+//                .protocol(protocolConfig)
                 .reference(reference)
                 .start();
 
         DemoService demoService = bootstrap.getCache().get(reference);
-        String message = demoService.sayHello("Native");
-        System.out.println(message);
+        IntStream.range(0,100).forEach(i->{
+            String message = demoService.sayHello("quic");
+            System.out.println(message);
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     private static void runWithRefer() {

@@ -17,6 +17,7 @@
 package org.apache.dubbo.demo.graalvm.provider;
 
 import org.apache.dubbo.config.ApplicationConfig;
+import org.apache.dubbo.config.ProtocolConfig;
 import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.ServiceConfig;
 import org.apache.dubbo.config.bootstrap.DubboBootstrap;
@@ -57,8 +58,14 @@ public class Application {
         m.put("proxy","jdk");
         applicationConfig.setParameters(m);
 
+
+        ProtocolConfig protocolConfig = new ProtocolConfig();
+        protocolConfig.setPort(7555);
+        protocolConfig.setTransporter("quic");
+
         bootstrap.application(applicationConfig)
                 .registry(new RegistryConfig("zookeeper://127.0.0.1:2181"))
+                .protocol(protocolConfig)
                 .service(service)
                 .start()
                 .await();

@@ -413,6 +413,7 @@
                                     <include>org.apache.dubbo:dubbo-rpc-injvm</include>
                                     <include>org.apache.dubbo:dubbo-rpc-rest</include>
                                     <include>org.apache.dubbo:dubbo-rpc-grpc</include>
+                                    <include>org.apache.dubbo:dubbo-rpc-quic</include>
                                     <include>org.apache.dubbo:dubbo-rpc-triple</include>
                                     <include>org.apache.dubbo:dubbo-cluster</include>
                                     <include>org.apache.dubbo:dubbo-registry-api</include>
