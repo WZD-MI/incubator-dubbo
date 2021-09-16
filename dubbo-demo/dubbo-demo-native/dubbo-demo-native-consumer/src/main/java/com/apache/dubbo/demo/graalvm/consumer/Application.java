@@ -17,6 +17,7 @@
 package com.apache.dubbo.demo.graalvm.consumer;
 
 import org.apace.dubbo.graalvm.demo.DemoService;
+
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ProtocolConfig;
 import org.apache.dubbo.config.ReferenceConfig;
@@ -49,11 +50,11 @@ public class Application {
         reference.setGeneric("false");
 
         DubboBootstrap bootstrap = DubboBootstrap.getInstance();
-        ApplicationConfig applicationConfig =  new ApplicationConfig("dubbo-demo-api-consumer");
+        ApplicationConfig applicationConfig = new ApplicationConfig("dubbo-demo-api-consumer");
         applicationConfig.setQosEnable(false);
         applicationConfig.setCompiler("jdk");
-        Map<String,String> m = new HashMap<>(1);
-        m.put("proxy","jdk");
+        Map<String, String> m = new HashMap<>(1);
+        m.put("proxy", "jdk");
         applicationConfig.setParameters(m);
 
 
@@ -63,19 +64,23 @@ public class Application {
 
 
         bootstrap.application(applicationConfig)
-                .registry(new RegistryConfig("zookeeper://127.0.0.1:2181"))
+            .registry(new RegistryConfig("zookeeper://127.0.0.1:2181"))
 //                .protocol(protocolConfig)
-                .reference(reference)
-                .start();
+            .reference(reference)
+            .start();
 
         DemoService demoService = bootstrap.getCache().get(reference);
-        IntStream.range(0,100).forEach(i->{
-            String message = demoService.sayHello("quic");
-            System.out.println(message);
+        IntStream.range(0, 100).forEach(i -> {
+            try {
+                String message = demoService.sayHello("quic");
+                System.out.println(message);
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
             try {
                 TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            } catch (Throwable ex) {
+                ex.printStackTrace();
             }
         });
     }
