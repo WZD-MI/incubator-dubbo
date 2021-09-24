@@ -100,8 +100,6 @@ final class QuicNettyChannel extends AbstractChannel {
                 Field f = qqc.getClass().getDeclaredField("remote");
                 f.setAccessible(true);
                 v = (InetSocketAddress) f.get(qqc);
-//                System.out.println(v);
-
             } catch (NoSuchFieldException | IllegalAccessException e) {
                 e.printStackTrace();
             }

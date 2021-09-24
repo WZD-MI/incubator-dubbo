@@ -16,16 +16,14 @@
  */
 package com.apache.dubbo.demo.graalvm.consumer;
 
-import org.apace.dubbo.graalvm.demo.DemoService;
-
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ProtocolConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.bootstrap.DubboBootstrap;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.apace.dubbo.graalvm.demo.DemoService;
+
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
@@ -64,7 +62,7 @@ public class Application {
                 e.printStackTrace();
             }
             try {
-                TimeUnit.SECONDS.sleep(1);
+                TimeUnit.SECONDS.sleep(5);
             } catch (Throwable ex) {
                 ex.printStackTrace();
             }

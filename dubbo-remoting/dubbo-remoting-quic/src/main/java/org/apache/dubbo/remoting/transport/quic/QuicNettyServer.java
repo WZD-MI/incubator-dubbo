@@ -36,6 +36,7 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
+import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.incubator.codec.quic.InsecureQuicTokenHandler;
 import io.netty.incubator.codec.quic.QuicServerCodecBuilder;
 import io.netty.incubator.codec.quic.QuicSslContext;
@@ -86,7 +87,7 @@ public class QuicNettyServer extends AbstractServer implements RemotingServer {
     @Override
     protected void doOpen() throws Throwable {
 
-        bossGroup = QuicNettyEventLoopFactory.eventLoopGroup(1, "NettyServerBoss");
+        bossGroup = QuicNettyEventLoopFactory.eventLoopGroup(1, "QuicNettyServerBoss");
 
         final QuicNettyServerHandler nettyServerHandler = new QuicNettyServerHandler(getUrl(), this);
         channels = nettyServerHandler.getChannels();
@@ -116,7 +117,7 @@ public class QuicNettyServer extends AbstractServer implements RemotingServer {
                     ch.pipeline()
                         .addLast("decoder", adapter.getDecoder())
                         .addLast("encoder", adapter.getEncoder())
-//                        .addLast("server-idle-handler", new IdleStateHandler(0, 0, idleTimeout, MILLISECONDS))
+                        .addLast("server-idle-handler", new IdleStateHandler(0, 0, idleTimeout, TimeUnit.MILLISECONDS))
                         .addLast("handler", nettyServerHandler);
                 }
             }).build();
@@ -128,14 +129,9 @@ public class QuicNettyServer extends AbstractServer implements RemotingServer {
 
         // bind
         InetSocketAddress address = getBindAddress();
-        System.out.println("bind address:"+address);
+        logger.info("bind address:"+address);
         ChannelFuture channelFuture = bootstrap.bind(address);
-        channelFuture.addListener(new ChannelFutureListener() {
-            @Override
-            public void operationComplete(ChannelFuture channelFuture) throws Exception {
-                System.out.println(channelFuture);
-            }
-        });
+        channelFuture.addListener((ChannelFutureListener) channelFuture1 -> logger.info("bind finish:"+channelFuture1));
     }
 
     @Override

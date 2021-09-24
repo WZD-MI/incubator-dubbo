@@ -35,13 +35,13 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.ChannelInputShutdownReadComplete;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.incubator.codec.quic.QuicChannel;
 import io.netty.incubator.codec.quic.QuicClientCodecBuilder;
 import io.netty.incubator.codec.quic.QuicSslContext;
 import io.netty.incubator.codec.quic.QuicSslContextBuilder;
 import io.netty.incubator.codec.quic.QuicStreamChannel;
 import io.netty.incubator.codec.quic.QuicStreamType;
-import io.netty.util.NetUtil;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
@@ -55,13 +55,8 @@ public class QuicNettyClient extends AbstractClient {
     /**
      * netty client bootstrap
      */
-    private static final EventLoopGroup EVENT_LOOP_GROUP = QuicNettyEventLoopFactory.eventLoopGroup(Constants.DEFAULT_IO_THREADS, "NettyClientWorker");
+    private static final EventLoopGroup EVENT_LOOP_GROUP = QuicNettyEventLoopFactory.eventLoopGroup(Constants.DEFAULT_IO_THREADS, "QuicNettyClientWorker");
 
-    private static final String SOCKS_PROXY_HOST = "socksProxyHost";
-
-    private static final String SOCKS_PROXY_PORT = "socksProxyPort";
-
-    private static final String DEFAULT_SOCKS_PROXY_PORT = "1080";
 
     private Bootstrap bootstrap;
 
@@ -95,9 +90,7 @@ public class QuicNettyClient extends AbstractClient {
     protected void doOpen() throws Throwable {
         QuicSslContext context = QuicSslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).
             applicationProtocols("http/0.9").build();
-
         NioEventLoopGroup group = new NioEventLoopGroup(1);
-
         io.netty.channel.ChannelHandler codec = new QuicClientCodecBuilder()
             .sslContext(context)
             .maxIdleTimeout(5000, TimeUnit.MILLISECONDS)
@@ -110,18 +103,15 @@ public class QuicNettyClient extends AbstractClient {
             .channel(NioDatagramChannel.class)
             .handler(codec)
             .bind(0).sync().channel();
-
-        System.out.println("do open finish");
-
+        logger.info("quic client do open finish");
     }
 
     @Override
     protected void doConnect() throws Throwable {
-        System.out.println("do connect");
+        logger.info("quic client do connect");
         final QuicNettyClientHandler nettyClientHandler = new QuicNettyClientHandler(getUrl(), this);
         InetSocketAddress address = getConnectAddress();
-        address =new InetSocketAddress(NetUtil.LOCALHOST4, 7555);
-        System.out.println("address:"+address);
+        logger.info("quic connect address:"+address);
         QuicChannel quicChannel = QuicChannel.newBootstrap(qchannel)
             .streamHandler(new ChannelInboundHandlerAdapter() {
                 @Override
@@ -155,16 +145,12 @@ public class QuicNettyClient extends AbstractClient {
                     )
                         .addLast("decoder", adapter.getDecoder())
                         .addLast("encoder", adapter.getEncoder())
-//                        .addLast("client-idle-handler", new IdleStateHandler(heartbeatInterval, 0, 0, MILLISECONDS))
+                        .addLast("client-idle-handler", new IdleStateHandler(heartbeatInterval, 0, 0, TimeUnit.MILLISECONDS))
                         .addLast("handler", nettyClientHandler);
                     ;
                 }
             }
         ).sync().getNow();
-
-        System.out.println("2:"+this.schannel);
-
-
     }
 
     @Override

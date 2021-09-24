@@ -24,46 +24,30 @@ import org.apache.dubbo.config.bootstrap.DubboBootstrap;
 
 import org.apace.dubbo.graalvm.demo.DemoService;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class Application {
 
     public static void main(String[] args) throws Exception {
-        System.setProperty("dubbo.application.logger", "jdk");
         startWithBootstrap();
         System.in.read();
-    }
-
-    private static boolean isClassic(String[] args) {
-        return args.length > 0 && "classic".equalsIgnoreCase(args[0]);
     }
 
     private static void startWithBootstrap() {
         ServiceConfig<DemoServiceImpl> service = new ServiceConfig<>();
         service.setInterface(DemoService.class);
         service.setRef(new DemoServiceImpl());
-
         DubboBootstrap bootstrap = DubboBootstrap.getInstance();
-
         ApplicationConfig applicationConfig = new ApplicationConfig("dubbo-demo-api-provider");
         applicationConfig.setQosEnable(false);
-        applicationConfig.setCompiler("jdk");
-        Map<String,String> m = new HashMap<>(1);
-        m.put("proxy","jdk");
-        applicationConfig.setParameters(m);
-
-
         ProtocolConfig protocolConfig = new ProtocolConfig();
         protocolConfig.setPort(7555);
         protocolConfig.setTransporter("quic");
 
         bootstrap.application(applicationConfig)
-                .registry(new RegistryConfig("zookeeper://127.0.0.1:2181"))
-                .protocol(protocolConfig)
-                .service(service)
-                .start()
-                .await();
+            .registry(new RegistryConfig("zookeeper://127.0.0.1:2181"))
+            .protocol(protocolConfig)
+            .service(service)
+            .start()
+            .await();
     }
 
 }
