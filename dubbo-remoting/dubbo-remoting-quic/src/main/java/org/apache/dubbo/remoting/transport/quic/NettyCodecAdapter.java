@@ -63,9 +63,9 @@ final public class NettyCodecAdapter {
 
         @Override
         protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
-            ChannelBuffer buffer = new NettyBackedChannelBuffer(out);
+            ChannelBuffer buffer = new QuicNettyBackedChannelBuffer(out);
             Channel ch = ctx.channel();
-            NettyChannel channel = NettyChannel.getOrAddChannel(ch, url, handler);
+            QuicNettyChannel channel = QuicNettyChannel.getOrAddChannel(ch, url, handler);
             codec.encode(channel, buffer, msg);
         }
     }
@@ -75,9 +75,9 @@ final public class NettyCodecAdapter {
         @Override
         protected void decode(ChannelHandlerContext ctx, ByteBuf input, List<Object> out) throws Exception {
 
-            ChannelBuffer message = new NettyBackedChannelBuffer(input);
+            ChannelBuffer message = new QuicNettyBackedChannelBuffer(input);
 
-            NettyChannel channel = NettyChannel.getOrAddChannel(ctx.channel(), url, handler);
+            QuicNettyChannel channel = QuicNettyChannel.getOrAddChannel(ctx.channel(), url, handler);
 
             // decode object.
             do {

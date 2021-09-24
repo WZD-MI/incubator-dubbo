@@ -30,7 +30,7 @@ import io.netty.util.concurrent.DefaultThreadFactory;
 
 import java.util.concurrent.ThreadFactory;
 
-public class NettyEventLoopFactory {
+public class QuicNettyEventLoopFactory {
     public static EventLoopGroup eventLoopGroup(int threads, String threadFactoryName) {
         ThreadFactory threadFactory = new DefaultThreadFactory(threadFactoryName, true);
         return shouldEpoll() ? new EpollEventLoopGroup(threads, threadFactory) :

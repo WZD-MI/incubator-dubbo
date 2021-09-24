@@ -36,14 +36,14 @@ import static org.apache.dubbo.common.constants.CommonConstants.HEARTBEAT_EVENT;
  * NettyClientHandler
  */
 @io.netty.channel.ChannelHandler.Sharable
-public class NettyClientHandler extends ChannelDuplexHandler {
-    private static final Logger logger = LoggerFactory.getLogger(NettyClientHandler.class);
+public class QuicNettyClientHandler extends ChannelDuplexHandler {
+    private static final Logger logger = LoggerFactory.getLogger(QuicNettyClientHandler.class);
 
     private final URL url;
 
     private final ChannelHandler handler;
 
-    public NettyClientHandler(URL url, ChannelHandler handler) {
+    public QuicNettyClientHandler(URL url, ChannelHandler handler) {
         if (url == null) {
             throw new IllegalArgumentException("url == null");
         }
@@ -56,7 +56,7 @@ public class NettyClientHandler extends ChannelDuplexHandler {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        NettyChannel channel = NettyChannel.getOrAddChannel(ctx.channel(), url, handler);
+        QuicNettyChannel channel = QuicNettyChannel.getOrAddChannel(ctx.channel(), url, handler);
         handler.connected(channel);
         if (logger.isInfoEnabled()) {
             logger.info("The connection of " + channel.getLocalAddress() + " -> " + channel.getRemoteAddress() + " is established.");
@@ -65,11 +65,11 @@ public class NettyClientHandler extends ChannelDuplexHandler {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        NettyChannel channel = NettyChannel.getOrAddChannel(ctx.channel(), url, handler);
+        QuicNettyChannel channel = QuicNettyChannel.getOrAddChannel(ctx.channel(), url, handler);
         try {
             handler.disconnected(channel);
         } finally {
-            NettyChannel.removeChannel(ctx.channel());
+            QuicNettyChannel.removeChannel(ctx.channel());
         }
 
         if (logger.isInfoEnabled()) {
@@ -79,14 +79,14 @@ public class NettyClientHandler extends ChannelDuplexHandler {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        NettyChannel channel = NettyChannel.getOrAddChannel(ctx.channel(), url, handler);
+        QuicNettyChannel channel = QuicNettyChannel.getOrAddChannel(ctx.channel(), url, handler);
         handler.received(channel, msg);
     }
 
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         super.write(ctx, msg, promise);
-        final NettyChannel channel = NettyChannel.getOrAddChannel(ctx.channel(), url, handler);
+        final QuicNettyChannel channel = QuicNettyChannel.getOrAddChannel(ctx.channel(), url, handler);
         final boolean isRequest = msg instanceof Request;
 
         // We add listeners to make sure our out bound event is correct.
@@ -113,7 +113,7 @@ public class NettyClientHandler extends ChannelDuplexHandler {
         // send heartbeat when read idle.
         if (evt instanceof IdleStateEvent) {
             try {
-                NettyChannel channel = NettyChannel.getOrAddChannel(ctx.channel(), url, handler);
+                QuicNettyChannel channel = QuicNettyChannel.getOrAddChannel(ctx.channel(), url, handler);
                 if (logger.isDebugEnabled()) {
                     logger.debug("IdleStateEvent triggered, send heartbeat to channel " + channel);
                 }
@@ -123,7 +123,7 @@ public class NettyClientHandler extends ChannelDuplexHandler {
                 req.setEvent(HEARTBEAT_EVENT);
                 channel.send(req);
             } finally {
-                NettyChannel.removeChannelIfDisconnected(ctx.channel());
+                QuicNettyChannel.removeChannelIfDisconnected(ctx.channel());
             }
         } else {
             super.userEventTriggered(ctx, evt);
@@ -133,11 +133,11 @@ public class NettyClientHandler extends ChannelDuplexHandler {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
             throws Exception {
-        NettyChannel channel = NettyChannel.getOrAddChannel(ctx.channel(), url, handler);
+        QuicNettyChannel channel = QuicNettyChannel.getOrAddChannel(ctx.channel(), url, handler);
         try {
             handler.caught(channel, cause);
         } finally {
-            NettyChannel.removeChannelIfDisconnected(ctx.channel());
+            QuicNettyChannel.removeChannelIfDisconnected(ctx.channel());
         }
     }
 

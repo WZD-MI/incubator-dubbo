@@ -36,7 +36,6 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
-import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.incubator.codec.quic.InsecureQuicTokenHandler;
 import io.netty.incubator.codec.quic.QuicServerCodecBuilder;
 import io.netty.incubator.codec.quic.QuicSslContext;
@@ -48,8 +47,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 
 /**
@@ -89,9 +86,9 @@ public class QuicNettyServer extends AbstractServer implements RemotingServer {
     @Override
     protected void doOpen() throws Throwable {
 
-        bossGroup = NettyEventLoopFactory.eventLoopGroup(1, "NettyServerBoss");
+        bossGroup = QuicNettyEventLoopFactory.eventLoopGroup(1, "NettyServerBoss");
 
-        final NettyServerHandler nettyServerHandler = new NettyServerHandler(getUrl(), this);
+        final QuicNettyServerHandler nettyServerHandler = new QuicNettyServerHandler(getUrl(), this);
         channels = nettyServerHandler.getChannels();
 
 

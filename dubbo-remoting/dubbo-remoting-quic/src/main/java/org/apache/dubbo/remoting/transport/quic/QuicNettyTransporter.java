@@ -23,9 +23,6 @@ import org.apache.dubbo.remoting.RemotingException;
 import org.apache.dubbo.remoting.RemotingServer;
 import org.apache.dubbo.remoting.Transporter;
 
-/**
- * Default extension of {@link Transporter} using quic.
- */
 public class QuicNettyTransporter implements Transporter {
 
     public static final String NAME = "quic";

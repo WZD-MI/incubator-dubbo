@@ -27,12 +27,10 @@ import org.apache.dubbo.remoting.utils.PayloadDropper;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.incubator.codec.quic.QuicChannel;
-import io.netty.incubator.codec.quic.QuicStreamAddress;
 import io.netty.incubator.codec.quic.QuicStreamChannel;
 
 import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -44,13 +42,13 @@ import static org.apache.dubbo.common.constants.CommonConstants.TIMEOUT_KEY;
 /**
  * NettyChannel maintains the cache of channel.
  */
-final class NettyChannel extends AbstractChannel {
+final class QuicNettyChannel extends AbstractChannel {
 
-    private static final Logger logger = LoggerFactory.getLogger(NettyChannel.class);
+    private static final Logger logger = LoggerFactory.getLogger(QuicNettyChannel.class);
     /**
      * the cache for netty channel and dubbo channel
      */
-    private static final ConcurrentMap<Channel, NettyChannel> CHANNEL_MAP = new ConcurrentHashMap<Channel, NettyChannel>();
+    private static final ConcurrentMap<Channel, QuicNettyChannel> CHANNEL_MAP = new ConcurrentHashMap<Channel, QuicNettyChannel>();
     /**
      * netty channel
      */
@@ -63,13 +61,13 @@ final class NettyChannel extends AbstractChannel {
 
     /**
      * The constructor of NettyChannel.
-     * It is private so NettyChannel usually create by {@link NettyChannel#getOrAddChannel(Channel, URL, ChannelHandler)}
+     * It is private so NettyChannel usually create by {@link QuicNettyChannel#getOrAddChannel(Channel, URL, ChannelHandler)}
      *
      * @param channel netty channel
      * @param url
      * @param handler dubbo handler that contain netty handler
      */
-    private NettyChannel(Channel channel, URL url, ChannelHandler handler) {
+    private QuicNettyChannel(Channel channel, URL url, ChannelHandler handler) {
         super(url, handler);
         if (channel == null) {
             throw new IllegalArgumentException("netty channel == null;");
@@ -86,7 +84,7 @@ final class NettyChannel extends AbstractChannel {
      * @param handler dubbo handler that contain netty's handler
      * @return
      */
-    static NettyChannel getOrAddChannel(Channel ch, URL url, ChannelHandler handler) {
+    static QuicNettyChannel getOrAddChannel(Channel ch, URL url, ChannelHandler handler) {
         if (ch == null) {
             return null;
         }
@@ -112,9 +110,9 @@ final class NettyChannel extends AbstractChannel {
 
         }
 
-        NettyChannel ret = CHANNEL_MAP.get(ch);
+        QuicNettyChannel ret = CHANNEL_MAP.get(ch);
         if (ret == null) {
-            NettyChannel nettyChannel = new NettyChannel(ch, url, handler);
+            QuicNettyChannel nettyChannel = new QuicNettyChannel(ch, url, handler);
             nettyChannel.setRemoteAddress(v);
             if (ch.isActive()) {
                 nettyChannel.markActive(true);
@@ -134,7 +132,7 @@ final class NettyChannel extends AbstractChannel {
      */
     static void removeChannelIfDisconnected(Channel ch) {
         if (ch != null && !ch.isActive()) {
-            NettyChannel nettyChannel = CHANNEL_MAP.remove(ch);
+            QuicNettyChannel nettyChannel = CHANNEL_MAP.remove(ch);
             if (nettyChannel != null) {
                 nettyChannel.markActive(false);
             }
@@ -143,7 +141,7 @@ final class NettyChannel extends AbstractChannel {
 
     static void removeChannel(Channel ch) {
         if (ch != null) {
-            NettyChannel nettyChannel = CHANNEL_MAP.remove(ch);
+            QuicNettyChannel nettyChannel = CHANNEL_MAP.remove(ch);
             if (nettyChannel != null) {
                 nettyChannel.markActive(false);
             }
@@ -297,7 +295,7 @@ final class NettyChannel extends AbstractChannel {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        NettyChannel other = (NettyChannel) obj;
+        QuicNettyChannel other = (QuicNettyChannel) obj;
         if (channel == null) {
             if (other.channel != null) {
                 return false;

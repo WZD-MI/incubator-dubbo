@@ -28,11 +28,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
-public class NettyBackedChannelBuffer implements ChannelBuffer {
+public class QuicNettyBackedChannelBuffer implements ChannelBuffer {
 
     private ByteBuf buffer;
 
-    public NettyBackedChannelBuffer(ByteBuf buffer) {
+    public QuicNettyBackedChannelBuffer(ByteBuf buffer) {
         Assert.notNull(buffer, "buffer == null");
         this.buffer = buffer;
     }
@@ -46,7 +46,7 @@ public class NettyBackedChannelBuffer implements ChannelBuffer {
 
     @Override
     public ChannelBuffer copy(int index, int length) {
-        return new NettyBackedChannelBuffer(buffer.copy(index, length));
+        return new QuicNettyBackedChannelBuffer(buffer.copy(index, length));
     }
 
     //has nothing use
@@ -164,7 +164,7 @@ public class NettyBackedChannelBuffer implements ChannelBuffer {
 
     @Override
     public ChannelBuffer copy() {
-        return new NettyBackedChannelBuffer(buffer.copy());
+        return new QuicNettyBackedChannelBuffer(buffer.copy());
     }
 
 
@@ -284,7 +284,7 @@ public class NettyBackedChannelBuffer implements ChannelBuffer {
 
     @Override
     public ChannelBuffer readBytes(int length) {
-        return new NettyBackedChannelBuffer(buffer.readBytes(length));
+        return new QuicNettyBackedChannelBuffer(buffer.readBytes(length));
     }
 
 

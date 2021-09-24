@@ -55,7 +55,7 @@ public class QuicNettyClient extends AbstractClient {
     /**
      * netty client bootstrap
      */
-    private static final EventLoopGroup EVENT_LOOP_GROUP = NettyEventLoopFactory.eventLoopGroup(Constants.DEFAULT_IO_THREADS, "NettyClientWorker");
+    private static final EventLoopGroup EVENT_LOOP_GROUP = QuicNettyEventLoopFactory.eventLoopGroup(Constants.DEFAULT_IO_THREADS, "NettyClientWorker");
 
     private static final String SOCKS_PROXY_HOST = "socksProxyHost";
 
@@ -118,7 +118,7 @@ public class QuicNettyClient extends AbstractClient {
     @Override
     protected void doConnect() throws Throwable {
         System.out.println("do connect");
-        final NettyClientHandler nettyClientHandler = new NettyClientHandler(getUrl(), this);
+        final QuicNettyClientHandler nettyClientHandler = new QuicNettyClientHandler(getUrl(), this);
         InetSocketAddress address = getConnectAddress();
         address =new InetSocketAddress(NetUtil.LOCALHOST4, 7555);
         System.out.println("address:"+address);
@@ -182,7 +182,7 @@ public class QuicNettyClient extends AbstractClient {
     @Override
     protected void doDisConnect() throws Throwable {
         try {
-            NettyChannel.removeChannelIfDisconnected(channel);
+            QuicNettyChannel.removeChannelIfDisconnected(channel);
         } catch (Throwable t) {
             logger.warn(t.getMessage());
         }
@@ -201,7 +201,7 @@ public class QuicNettyClient extends AbstractClient {
         if (c == null) {
             return null;
         }
-        return NettyChannel.getOrAddChannel(c, getUrl(), this);
+        return QuicNettyChannel.getOrAddChannel(c, getUrl(), this);
     }
 
     Channel getNettyChannel() {
