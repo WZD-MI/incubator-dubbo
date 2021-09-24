@@ -33,7 +33,6 @@ public class Application {
         runWithBootstrap();
     }
 
-
     private static void runWithBootstrap() {
         ReferenceConfig<DemoService> reference = new ReferenceConfig<>();
         reference.setInterface(DemoService.class);

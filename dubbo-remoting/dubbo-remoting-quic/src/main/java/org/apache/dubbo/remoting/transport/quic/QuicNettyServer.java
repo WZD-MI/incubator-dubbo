@@ -122,15 +122,12 @@ public class QuicNettyServer extends AbstractServer implements RemotingServer {
                 }
             }).build();
 
-        io.netty.channel.Channel channel = bootstrap.group(bossGroup)
-            .channel(NioDatagramChannel.class)
-            .handler(codec)
-            .bind(getBindAddress()).sync().channel();
-
-        // bind
         InetSocketAddress address = getBindAddress();
         logger.info("bind address:"+address);
-        ChannelFuture channelFuture = bootstrap.bind(address);
+        ChannelFuture channelFuture = bootstrap.group(bossGroup)
+            .channel(NioDatagramChannel.class)
+            .handler(codec)
+            .bind(address);
         channelFuture.addListener((ChannelFutureListener) channelFuture1 -> logger.info("bind finish:"+channelFuture1));
     }
 
