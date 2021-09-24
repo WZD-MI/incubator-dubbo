@@ -32,7 +32,6 @@ import java.util.stream.IntStream;
 public class Application {
 
     public static void main(String[] args) {
-        System.setProperty("dubbo.application.logger", "log4j");
         runWithBootstrap();
     }
 
@@ -45,11 +44,6 @@ public class Application {
         DubboBootstrap bootstrap = DubboBootstrap.getInstance();
         ApplicationConfig applicationConfig = new ApplicationConfig("dubbo-demo-api-consumer");
         applicationConfig.setQosEnable(false);
-        applicationConfig.setCompiler("jdk");
-        Map<String, String> m = new HashMap<>(1);
-        m.put("proxy", "jdk");
-        applicationConfig.setParameters(m);
-
 
         ProtocolConfig protocolConfig = new ProtocolConfig();
         protocolConfig.setPort(5555);
@@ -58,7 +52,6 @@ public class Application {
 
         bootstrap.application(applicationConfig)
             .registry(new RegistryConfig("zookeeper://127.0.0.1:2181"))
-//                .protocol(protocolConfig)
             .reference(reference)
             .start();
 
