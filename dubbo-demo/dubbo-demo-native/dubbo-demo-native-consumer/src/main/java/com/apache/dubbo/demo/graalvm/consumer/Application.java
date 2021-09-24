@@ -33,16 +33,9 @@ public class Application {
 
     public static void main(String[] args) {
         System.setProperty("dubbo.application.logger", "log4j");
-        if (isClassic(args)) {
-            runWithRefer();
-        } else {
-            runWithBootstrap();
-        }
+        runWithBootstrap();
     }
 
-    private static boolean isClassic(String[] args) {
-        return args.length > 0 && "classic".equalsIgnoreCase(args[0]);
-    }
 
     private static void runWithBootstrap() {
         ReferenceConfig<DemoService> reference = new ReferenceConfig<>();
@@ -85,13 +78,4 @@ public class Application {
         });
     }
 
-    private static void runWithRefer() {
-        ReferenceConfig<DemoService> reference = new ReferenceConfig<>();
-        reference.setApplication(new ApplicationConfig("dubbo-demo-api-consumer"));
-        reference.setRegistry(new RegistryConfig("zookeeper://127.0.0.1:2181"));
-        reference.setInterface(DemoService.class);
-        DemoService service = reference.get();
-        String message = service.sayHello("dubbo");
-        System.out.println(message);
-    }
 }
