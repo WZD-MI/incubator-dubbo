@@ -26,17 +26,12 @@ import org.apace.dubbo.graalvm.demo.DemoService;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
 
 public class Application {
 
     public static void main(String[] args) throws Exception {
         System.setProperty("dubbo.application.logger", "jdk");
-        if (isClassic(args)) {
-            startWithExport();
-        } else {
-            startWithBootstrap();
-        }
+        startWithBootstrap();
         System.in.read();
     }
 
@@ -71,15 +66,4 @@ public class Application {
                 .await();
     }
 
-    private static void startWithExport() throws InterruptedException {
-        ServiceConfig<DemoServiceImpl> service = new ServiceConfig<>();
-        service.setInterface(DemoService.class);
-        service.setRef(new DemoServiceImpl());
-        service.setApplication(new ApplicationConfig("dubbo-demo-api-provider"));
-        service.setRegistry(new RegistryConfig("zookeeper://127.0.0.1:2181"));
-        service.export();
-
-        System.out.println("dubbo service started");
-        new CountDownLatch(1).await();
-    }
 }
