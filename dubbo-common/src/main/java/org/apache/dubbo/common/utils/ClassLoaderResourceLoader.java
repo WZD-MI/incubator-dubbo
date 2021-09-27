@@ -84,7 +84,7 @@ public class ClassLoaderResourceLoader {
             Enumeration<URL> urls = null;
             try {
                 urls = currentClassLoader.getResources(fileName);
-                boolean isNative =  Boolean.parseBoolean(System.getProperty(NATIVE, "false"));
+                boolean isNative = NativeUtils.isNative();
                 if (urls != null) {
                     while (urls.hasMoreElements()) {
                         URL url = urls.nextElement();
@@ -110,8 +110,7 @@ public class ClassLoaderResourceLoader {
             Field field = URL.class.getDeclaredField("ref");
             field.setAccessible(true);
             field.set(url, UUID.randomUUID().toString());
-        } catch (Throwable ex) {
-            //ignore
+        } catch (Throwable ignore) {
         }
     }
 

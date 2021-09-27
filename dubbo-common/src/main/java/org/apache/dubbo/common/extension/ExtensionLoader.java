@@ -33,6 +33,7 @@ import org.apache.dubbo.common.utils.CollectionUtils;
 import org.apache.dubbo.common.utils.ConcurrentHashSet;
 import org.apache.dubbo.common.utils.ConfigUtils;
 import org.apache.dubbo.common.utils.Holder;
+import org.apache.dubbo.common.utils.NativeUtils;
 import org.apache.dubbo.common.utils.ReflectUtils;
 import org.apache.dubbo.common.utils.StringUtils;
 import org.apache.dubbo.rpc.model.ApplicationModel;
@@ -1168,7 +1169,7 @@ public class ExtensionLoader<T> {
     private Class<?> createAdaptiveExtensionClass() {
         ClassLoader classLoader = findClassLoader();
         try {
-            if (Boolean.parseBoolean(System.getProperty(NATIVE, "false"))) {
+            if (NativeUtils.isNative()) {
                 System.out.println("loadClass===>"+type.getName());
                 return classLoader.loadClass(type.getName() + "$Adaptive");
             }
