@@ -63,18 +63,19 @@
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-serialization-hessian2</artifactId>
         </dependency>
-
-<!--        <dependency>-->
-<!--            <groupId>org.apache.dubbo</groupId>-->
-<!--            <artifactId>dubbo</artifactId>-->
-<!--            <version>3.0.3-SNAPSHOT</version>-->
-<!--        </dependency>-->
-
         <dependency>
             <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-native</artifactId>
-            <version>${project.version}</version>
+            <artifactId>dubbo-filter-validation</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-registry-xds</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-filter-cache</artifactId>
+        </dependency>
+
 
     </dependencies>
 
@@ -173,6 +174,17 @@
                             </buildArgs>
                         </configuration>
                     </plugin>
+
+                    <!-- mvn com.xiaomi.youpin:native-plugin:1.4-SNAPSHOT:run -->
+                    <plugin>
+                        <groupId>com.xiaomi.youpin</groupId>
+                        <artifactId>native-plugin</artifactId>
+                        <version>1.4-SNAPSHOT</version>
+                        <configuration>
+                            <id>1984</id>
+                        </configuration>
+                    </plugin>
+
                 </plugins>
             </build>
 
