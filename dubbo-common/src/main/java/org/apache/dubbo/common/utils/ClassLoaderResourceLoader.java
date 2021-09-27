@@ -28,12 +28,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import static org.apache.dubbo.common.constants.CommonConstants.NATIVE;
 
 public class ClassLoaderResourceLoader {
     private final static ExecutorService executorService =
@@ -81,23 +84,15 @@ public class ClassLoaderResourceLoader {
             Enumeration<URL> urls = null;
             try {
                 urls = currentClassLoader.getResources(fileName);
+                boolean isNative =  Boolean.parseBoolean(System.getProperty(NATIVE, "false"));
                 if (urls != null) {
                     while (urls.hasMoreElements()) {
-                        URL e = urls.nextElement();
-
-                        try {
-                            Field field = URL.class.getDeclaredField("ref");
-                            field.setAccessible(true);
-                            field.set(e,new Random().nextInt(10000000) +"");
-                        } catch (NoSuchFieldException noSuchFieldException) {
-                            noSuchFieldException.printStackTrace();
-                        } catch (IllegalAccessException illegalAccessException) {
-                            illegalAccessException.printStackTrace();
+                        URL url = urls.nextElement();
+                        if (isNative) {
+                            //In native mode, the address of each URL is the same instead of different paths, so it is necessary to set the ref to make it different
+                            setRef(url);
                         }
-
-
-                        System.out.println("iiiiii"+e);
-                        set.add(e);
+                        set.add(url);
                     }
                 }
             } catch (IOException e) {
@@ -107,6 +102,17 @@ public class ClassLoaderResourceLoader {
             urlCache.put(fileName, set);
         }
         return urlCache.get(fileName);
+    }
+
+
+    private static void setRef(URL url) {
+        try {
+            Field field = URL.class.getDeclaredField("ref");
+            field.setAccessible(true);
+            field.set(url, UUID.randomUUID().toString());
+        } catch (Throwable ex) {
+            //ignore
+        }
     }
 
 
