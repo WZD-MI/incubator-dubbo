@@ -48,7 +48,15 @@ public class ConfigScopeModelInitializer implements ScopeModelInitializer {
     public void initializeModuleModel(ModuleModel moduleModel) {
         ScopeBeanFactory beanFactory = moduleModel.getBeanFactory();
         // moduleDeployer
-        ModuleDeployer moduleDeployer = beanFactory.registerBean(DefaultModuleDeployer.class);
-        moduleModel.setDeployer(moduleDeployer);
+        long id = System.currentTimeMillis();
+        System.out.println("$$$$$$$ get deployer:DefaultModuleDeployer:"+id);
+        try {
+            ModuleDeployer moduleDeployer = beanFactory.registerBean(DefaultModuleDeployer.class);
+            System.out.println("====>moduleDeployer:" + moduleDeployer + ":" + id);
+            moduleModel.setDeployer(moduleDeployer);
+        } catch (Throwable ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        }
     }
 }

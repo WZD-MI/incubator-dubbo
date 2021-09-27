@@ -188,6 +188,10 @@ public class ApplicationModel extends ScopeModel {
 
         ExtensionLoader<ScopeModelInitializer> initializerExtensionLoader = this.getExtensionLoader(ScopeModelInitializer.class);
         Set<ScopeModelInitializer> initializers = initializerExtensionLoader.getSupportedExtensionInstances();
+        System.out.println("[[[[[[["+initializers.size());
+        initializers.stream().forEach(it->{
+            System.out.println("kkkkkkkkkk--->"+it);
+        });
         for (ScopeModelInitializer initializer : initializers) {
             initializer.initializeApplicationModel(this);
         }

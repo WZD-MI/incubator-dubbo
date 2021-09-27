@@ -45,6 +45,10 @@
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-registry-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-registry-zookeeper</artifactId>
         </dependency>
         <dependency>
@@ -59,6 +63,12 @@
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-serialization-hessian2</artifactId>
         </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>org.apache.dubbo</groupId>-->
+<!--            <artifactId>dubbo</artifactId>-->
+<!--            <version>3.0.3-SNAPSHOT</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.apache.dubbo</groupId>
@@ -138,6 +148,7 @@
                                 --initialize-at-build-time=org.slf4j.impl.Log4jLoggerFactory
                                 --initialize-at-build-time=org.slf4j.impl.Log4jLoggerAdapter
                                 --initialize-at-build-time=org.eclipse.collections.api.factory.Sets
+                                --initialize-at-build-time=io.netty.util.internal.logging.Log4JLogger
 
 
 
@@ -152,7 +163,6 @@
                                 --initialize-at-run-time=io.netty.channel.unix.Errors
                                 --initialize-at-run-time=io.netty.channel.unix.IovArray
                                 --initialize-at-run-time=io.netty.channel.unix.Limits
-                                --initialize-at-run-time=io.netty.util.internal.logging.Log4JLogger
                                 --initialize-at-run-time=io.netty.channel.unix.Socket
                                 --initialize-at-run-time=io.netty.channel.ChannelHandlerMask
 

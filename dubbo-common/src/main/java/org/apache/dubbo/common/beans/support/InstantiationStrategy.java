@@ -49,9 +49,11 @@ public class InstantiationStrategy {
 
         // 1. try default constructor
         try {
+            System.out.println("instantiate:"+type);
             return type.getConstructor().newInstance();
         } catch (NoSuchMethodException e) {
             // ignore no default constructor
+            System.out.println("instantiate error:"+type+ ":"+supportConstructorWithArguments);
             if (!supportConstructorWithArguments) {
                 throw new IllegalArgumentException("Default constructor was not found for type: " + type.getName());
             }
@@ -80,6 +82,7 @@ public class InstantiationStrategy {
         for (int i = 0; i < parameterTypes.length; i++) {
             args[i] = getArgumentValueForType(parameterTypes[i]);
         }
+        System.out.println("args:"+args);
         return (T) constructor.newInstance(args);
     }
 

@@ -217,6 +217,7 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
         }
         // prepare for export
         ModuleDeployer moduleDeployer = getScopeModel().getDeployer();
+        System.out.println("*******>moduleDeployer:"+moduleDeployer);
         moduleDeployer.prepare();
 
         if (!this.isRefreshed()) {

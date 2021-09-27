@@ -971,6 +971,7 @@ public class ExtensionLoader<T> {
                 String line;
                 String clazz = null;
                 while ((line = reader.readLine()) != null) {
+                    System.out.println("line:"+line);
                     final int ci = line.indexOf('#');
                     if (ci >= 0) {
                         line = line.substring(0, ci);
@@ -986,7 +987,9 @@ public class ExtensionLoader<T> {
                             } else {
                                 clazz = line;
                             }
+//                            System.out.println("^^^^clazz:"+clazz+","+isExcluded(clazz,excludedPackages));
                             if (StringUtils.isNotEmpty(clazz) && !isExcluded(clazz, excludedPackages)) {
+                                System.out.println("classForName:"+clazz);
                                 loadClass(extensionClasses, resourceURL, Class.forName(clazz, true, classLoader), name, overridden);
                             }
                         } catch (Throwable t) {
@@ -1166,6 +1169,7 @@ public class ExtensionLoader<T> {
         ClassLoader classLoader = findClassLoader();
         try {
             if (Boolean.parseBoolean(System.getProperty(NATIVE, "false"))) {
+                System.out.println("loadClass===>"+type.getName());
                 return classLoader.loadClass(type.getName() + "$Adaptive");
             }
         } catch (Throwable ignore) {

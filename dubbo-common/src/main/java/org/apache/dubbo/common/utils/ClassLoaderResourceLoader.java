@@ -18,6 +18,7 @@ package org.apache.dubbo.common.utils;
 
 import java.io.IOException;
 import java.lang.ref.SoftReference;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -25,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
@@ -59,6 +61,7 @@ public class ClassLoaderResourceLoader {
         return Collections.unmodifiableMap(new LinkedHashMap<>(resources));
     }
 
+
     public static Set<java.net.URL> loadResources(String fileName, ClassLoader currentClassLoader) {
         Map<ClassLoader, Map<String, Set<java.net.URL>>> classLoaderCache;
         if (classLoaderResourcesCache == null || (classLoaderCache = classLoaderResourcesCache.get()) == null) {
@@ -80,12 +83,27 @@ public class ClassLoaderResourceLoader {
                 urls = currentClassLoader.getResources(fileName);
                 if (urls != null) {
                     while (urls.hasMoreElements()) {
-                        set.add(urls.nextElement());
+                        URL e = urls.nextElement();
+
+                        try {
+                            Field field = URL.class.getDeclaredField("ref");
+                            field.setAccessible(true);
+                            field.set(e,new Random().nextInt(10000000) +"");
+                        } catch (NoSuchFieldException noSuchFieldException) {
+                            noSuchFieldException.printStackTrace();
+                        } catch (IllegalAccessException illegalAccessException) {
+                            illegalAccessException.printStackTrace();
+                        }
+
+
+                        System.out.println("iiiiii"+e);
+                        set.add(e);
                     }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            System.out.println("------->name:"+fileName+",set:"+set);
             urlCache.put(fileName, set);
         }
         return urlCache.get(fileName);
