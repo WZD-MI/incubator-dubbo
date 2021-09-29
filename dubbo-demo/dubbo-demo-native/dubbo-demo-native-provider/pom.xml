@@ -175,14 +175,18 @@
                         </configuration>
                     </plugin>
 
-                    <!-- mvn com.xiaomi.youpin:native-plugin:1.4-SNAPSHOT:run -->
                     <plugin>
                         <groupId>com.xiaomi.youpin</groupId>
                         <artifactId>native-plugin</artifactId>
                         <version>1.4-SNAPSHOT</version>
-                        <configuration>
-                            <id>1984</id>
-                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>process-sources</phase>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                     </plugin>
 
                 </plugins>
