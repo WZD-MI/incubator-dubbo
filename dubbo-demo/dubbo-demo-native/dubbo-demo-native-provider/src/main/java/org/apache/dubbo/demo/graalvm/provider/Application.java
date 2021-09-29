@@ -30,7 +30,7 @@ import java.util.concurrent.CountDownLatch;
 public class Application {
 
     public static void main(String[] args) throws Exception {
-        System.setProperty("dubbo.application.logger", "jdk");
+        System.setProperty("dubbo.application.logger", "log4j");
         if (isClassic(args)) {
             startWithExport();
         } else {
