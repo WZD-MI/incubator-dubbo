@@ -79,7 +79,14 @@ public class ZookeeperRegistry extends CacheableFailbackRegistry {
             group = PATH_SEPARATOR + group;
         }
         this.root = group;
-        zkClient = zookeeperTransporter.connect(url);
+        System.out.println("zzzzzzzzzzz:connect:"+url);
+        try {
+            zkClient = zookeeperTransporter.connect(url);
+            System.out.println("zzzzzzzzzzz:connect finish:" + url);
+        } catch (Throwable ex) {
+            System.out.println("connect error");
+            ex.printStackTrace();
+        }
         zkClient.addStateListener((state) -> {
             if (state == StateListener.RECONNECTED) {
                 logger.warn("Trying to fetch the latest urls, in case there're provider changes during connection loss.\n" +

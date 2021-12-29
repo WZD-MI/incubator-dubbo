@@ -154,8 +154,11 @@ public abstract class AbstractConfigManager extends LifecycleAdapter {
         if (config.getScopeModel() != scopeModel) {
             config.setScopeModel(scopeModel);
         }
+        String n = getTagName(config.getClass());
 
-        Map<String, AbstractConfig> configsMap = configsCache.computeIfAbsent(getTagName(config.getClass()), type -> new ConcurrentHashMap<>());
+        System.out.println("-------->tagName:"+n);
+
+        Map<String, AbstractConfig> configsMap = configsCache.computeIfAbsent(n, type -> new ConcurrentHashMap<>());
 
         // fast check duplicated equivalent config before write lock
         if (!(config instanceof ReferenceConfigBase || config instanceof ServiceConfigBase)) {
@@ -168,6 +171,7 @@ public abstract class AbstractConfigManager extends LifecycleAdapter {
 
         // lock by config type
         synchronized (configsMap) {
+            System.out.println("--->addIfAbsent:"+config+","+configsMap);
             return (T) addIfAbsent(config, configsMap);
         }
     }
@@ -219,6 +223,7 @@ public abstract class AbstractConfigManager extends LifecycleAdapter {
         }
 
         // override existed config if any
+        System.out.println("------->key:"+key+"=="+config);
         configsMap.put(key, config);
         return config;
     }
@@ -286,6 +291,7 @@ public abstract class AbstractConfigManager extends LifecycleAdapter {
     }
 
     public <C extends AbstractConfig> Collection<C> getConfigs(Class<C> configType) {
+        System.out.println("------>"+configsCache+","+configType);
         return (Collection<C>) getConfigsMap(getTagName(configType)).values();
     }
 
@@ -562,8 +568,12 @@ public abstract class AbstractConfigManager extends LifecycleAdapter {
 
         // validate configs
         Collection<T> configs = this.getConfigs(configType);
+        for (Object v : configs) {
+            System.out.println("%%%%"+v+","+configType);
+        }
         if (getConfigValidator() != null) {
             for (T config : configs) {
+                System.out.println(config+","+config.getId());
                 getConfigValidator().validate(config);
             }
         }

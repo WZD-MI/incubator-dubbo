@@ -167,6 +167,7 @@
                                 --initialize-at-build-time=org.apache.log4j.spi.LoggingEvent
                                 --initialize-at-build-time=org.slf4j.impl.Log4jLoggerFactory
                                 --initialize-at-build-time=org.slf4j.impl.Log4jLoggerAdapter
+                                --initialize-at-build-time=org.slf4j.impl.Log4jMDCAdapter
                                 --initialize-at-build-time=org.eclipse.collections.api.factory.Sets
                                 --initialize-at-build-time=io.netty.util.internal.logging.Log4JLogger
 

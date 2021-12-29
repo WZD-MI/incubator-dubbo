@@ -85,6 +85,7 @@ public abstract class AbstractRegistryFactory implements RegistryFactory, ScopeM
                 return registry;
             }
             //create registry by spi/ioc
+            System.out.println("====>connect reg url:"+url);
             registry = createRegistry(url);
         } catch (Exception e) {
             if (check) {

@@ -565,51 +565,61 @@ public abstract class AbstractConfig implements Serializable {
         refreshed.set(true);
         try {
             // check and init before do refresh
+            System.out.println("======;;;;;"+this);
             preProcessRefresh();
+            System.out.println("======;;;;;"+this);
 
-            Environment environment = getScopeModel().getModelEnvironment();
-            List<Map<String, String>> configurationMaps = environment.getConfigurationMaps();
+            if (false) {
 
-            // Search props starts with PREFIX in order
-            String preferredPrefix = null;
-            for (String prefix : getPrefixes()) {
-                if (ConfigurationUtils.hasSubProperties(configurationMaps, prefix)) {
-                    preferredPrefix = prefix;
-                    break;
-                }
-            }
-            if (preferredPrefix == null) {
-                preferredPrefix = getPrefixes().get(0);
-            }
-            // Extract sub props (which key was starts with preferredPrefix)
-            Collection<Map<String, String>> instanceConfigMaps = environment.getConfigurationMaps(this, preferredPrefix);
-            Map<String, String> subProperties = ConfigurationUtils.getSubProperties(instanceConfigMaps, preferredPrefix);
-            InmemoryConfiguration subPropsConfiguration = new InmemoryConfiguration(subProperties);
+                Environment environment = getScopeModel().getModelEnvironment();
+                List<Map<String, String>> configurationMaps = environment.getConfigurationMaps();
 
-            if (logger.isDebugEnabled()) {
-                String idOrName = "";
-                if (StringUtils.hasText(this.getId())) {
-                    idOrName = "[id=" + this.getId() + "]";
-                } else {
-                    String name = ReflectUtils.getProperty(this, "getName");
-                    if (StringUtils.hasText(name)) {
-                        idOrName = "[name=" + name + "]";
+                // Search props starts with PREFIX in order
+                String preferredPrefix = null;
+                for (String prefix : getPrefixes()) {
+                    if (ConfigurationUtils.hasSubProperties(configurationMaps, prefix)) {
+                        preferredPrefix = prefix;
+                        break;
                     }
                 }
-                logger.debug("Refreshing " + this.getClass().getSimpleName() + idOrName +
-                    " with prefix [" + preferredPrefix +
-                    "], extracted props: " + subProperties);
+                if (preferredPrefix == null) {
+                    preferredPrefix = getPrefixes().get(0);
+                }
+                // Extract sub props (which key was starts with preferredPrefix)
+                Collection<Map<String, String>> instanceConfigMaps = environment.getConfigurationMaps(this, preferredPrefix);
+                Map<String, String> subProperties = ConfigurationUtils.getSubProperties(instanceConfigMaps, preferredPrefix);
+                InmemoryConfiguration subPropsConfiguration = new InmemoryConfiguration(subProperties);
+
+                if (logger.isDebugEnabled()) {
+                    String idOrName = "";
+                    if (StringUtils.hasText(this.getId())) {
+                        idOrName = "[id=" + this.getId() + "]";
+                    } else {
+                        String name = ReflectUtils.getProperty(this, "getName");
+                        if (StringUtils.hasText(name)) {
+                            idOrName = "[name=" + name + "]";
+                        }
+                    }
+                    logger.debug("Refreshing " + this.getClass().getSimpleName() + idOrName +
+                        " with prefix [" + preferredPrefix +
+                        "], extracted props: " + subProperties);
+                }
+
+                assignProperties(this, environment, subProperties, subPropsConfiguration);
+
+                System.out.println("======;;;;;" + this);
+
+                // process extra refresh of subclass, e.g. refresh method configs
+                processExtraRefresh(preferredPrefix, subPropsConfiguration);
+                System.out.println("======;;;;;" + this);
             }
-
-            assignProperties(this, environment, subProperties, subPropsConfiguration);
-
-            // process extra refresh of subclass, e.g. refresh method configs
-            processExtraRefresh(preferredPrefix, subPropsConfiguration);
 
         } catch (Exception e) {
             logger.error("Failed to override field value of config bean: " + this, e);
             throw new IllegalStateException("Failed to override field value of config bean: " + this, e);
         }
+
+        System.out.println("======;;;;;"+this);
 
         postProcessRefresh();
     }

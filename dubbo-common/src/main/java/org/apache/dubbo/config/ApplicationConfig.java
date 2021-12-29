@@ -571,6 +571,10 @@ public class ApplicationConfig extends AbstractConfig {
 
     @Override
     public void refresh() {
+        if (true) {
+            return;
+        }
+        System.out.println("0000000->refresh");
         super.refresh();
         appendEnvironmentProperties();
     }

@@ -73,10 +73,14 @@ public class ZookeeperServiceDiscovery extends AbstractServiceDiscovery {
     @Override
     public void doInitialize(URL registryURL) throws Exception {
         this.registryURL = registryURL;
+        System.out.println("^^^^^build zk client");
         this.curatorFramework = buildCuratorFramework(registryURL);
+        System.out.println("^^^^^build zk client finish");
         this.rootPath = ROOT_PATH.getParameterValue(registryURL);
         this.serviceDiscovery = buildServiceDiscovery(curatorFramework, rootPath);
+        System.out.println("^^^^^a");
         this.serviceDiscovery.start();
+        System.out.println("^^^^^b");
     }
 
     @Override

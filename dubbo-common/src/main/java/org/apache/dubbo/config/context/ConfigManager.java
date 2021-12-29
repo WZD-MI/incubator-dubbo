@@ -235,7 +235,12 @@ public class ConfigManager extends AbstractConfigManager implements ApplicationE
     public void loadConfigs() {
         // application config has load before starting config center
         // load dubbo.applications.xxx
+
+        System.out.println("111111"+getApplication());
+
         loadConfigsOfTypeFromProps(ApplicationConfig.class);
+
+        System.out.println("22222"+getApplication());
 
         // load dubbo.monitors.xxx
         loadConfigsOfTypeFromProps(MonitorConfig.class);
@@ -243,12 +248,15 @@ public class ConfigManager extends AbstractConfigManager implements ApplicationE
         // load dubbo.metrics.xxx
         loadConfigsOfTypeFromProps(MetricsConfig.class);
 
+        System.out.println("5555"+getApplication());
+
         // load multiple config types:
         // load dubbo.protocols.xxx
         loadConfigsOfTypeFromProps(ProtocolConfig.class);
 
         // load dubbo.registries.xxx
         loadConfigsOfTypeFromProps(RegistryConfig.class);
+        System.out.println("6666"+getApplication());
 
         // load dubbo.metadata-report.xxx
         loadConfigsOfTypeFromProps(MetadataReportConfig.class);
@@ -256,7 +264,12 @@ public class ConfigManager extends AbstractConfigManager implements ApplicationE
         // config centers has bean loaded before starting config center
         //loadConfigsOfTypeFromProps(ConfigCenterConfig.class);
 
-        refreshAll();
+        System.out.println("4444"+getApplication());
+
+        //native 下这个刷新有问题
+//        refreshAll();
+
+        System.out.println("3333"+getApplication());
 
         checkConfigs();
 

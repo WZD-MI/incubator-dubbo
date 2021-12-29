@@ -58,6 +58,7 @@ public class Application {
         applicationConfig.setCompiler("jdk");
         Map<String, String> m = new HashMap<>(1);
         m.put("proxy", "jdk");
+        m.put("file.cache", "false");
         applicationConfig.setParameters(m);
 
         bootstrap.application(applicationConfig)

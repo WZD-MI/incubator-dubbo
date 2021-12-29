@@ -63,9 +63,14 @@ public abstract class CuratorFrameworkUtils {
             .connectString(connectionURL.getBackupAddress())
             .retryPolicy(buildRetryPolicy(connectionURL))
             .build();
+        System.out.println("0000000000start");
         curatorFramework.start();
+        System.out.println("0000000000start finish");
+
+        System.out.println("0000000000sconnect");
         curatorFramework.blockUntilConnected(BLOCK_UNTIL_CONNECTED_WAIT.getParameterValue(connectionURL),
             BLOCK_UNTIL_CONNECTED_UNIT.getParameterValue(connectionURL));
+        System.out.println("0000000000sconnect finish:"+curatorFramework.getState());
 
         if (!curatorFramework.getState().equals(CuratorFrameworkState.STARTED)) {
             throw new IllegalStateException("zookeeper client initialization failed");
