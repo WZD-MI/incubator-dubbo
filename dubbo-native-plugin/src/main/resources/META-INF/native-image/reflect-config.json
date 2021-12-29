@@ -1731,24 +1731,14 @@
     "allDeclaredConstructors": true
   },
   {
-    "name": "org.apache.dubbo.registry.zookeeper.ZookeeperRegistryFactory",
-    "allPublicMethods": true,
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": []
-      }
-    ]
+    "name":"org.apache.dubbo.registry.zookeeper.ZookeeperRegistryFactory",
+    "allPublicMethods":true,
+    "allPublicConstructors":true
   },
   {
-    "name": "org.apache.dubbo.registry.zookeeper.ZookeeperServiceDiscoveryFactory",
-    "allPublicMethods": true,
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": []
-      }
-    ]
+    "name":"org.apache.dubbo.registry.zookeeper.ZookeeperServiceDiscoveryFactory",
+    "allPublicMethods":true,
+    "allPublicConstructors":true
   },
   {
     "name": "org.apache.dubbo.remoting.Dispatcher",
@@ -1934,17 +1924,12 @@
     ]
   },
   {
-    "name": "org.apache.dubbo.remoting.zookeeper.curator.CuratorZookeeperTransporter",
-    "allPublicMethods": true,
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": []
-      }
-    ]
+    "name":"org.apache.dubbo.remoting.zookeeper.curator.CuratorZookeeperTransporter"
   },
   {
-    "name": "org.apache.dubbo.remoting.zookeeper.curator5.Curator5ZookeeperTransporter"
+    "name":"org.apache.dubbo.remoting.zookeeper.curator5.Curator5ZookeeperTransporter",
+    "allPublicMethods":true,
+    "allPublicConstructors":true
   },
   {
     "name": "org.apache.dubbo.rpc.Invoker",
@@ -2145,50 +2130,37 @@
     "name": "org.apache.dubbo.rpc.filter.DeprecatedFilter"
   },
   {
-    "name": "org.apache.dubbo.rpc.filter.EchoFilter",
-    "allPublicMethods": true,
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": []
-      }
-    ]
+    "name":"org.apache.dubbo.rpc.filter.EchoFilter",
+    "allPublicMethods":true,
+    "allPublicConstructors":true
   },
   {
-    "name": "org.apache.dubbo.rpc.filter.ExceptionFilter",
-    "allPublicMethods": true,
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": []
-      }
-    ]
+    "name":"org.apache.dubbo.rpc.filter.ExceptionFilter",
+    "allPublicMethods":true,
+    "allPublicConstructors":true
   },
   {
-    "name": "org.apache.dubbo.rpc.filter.ExecuteLimitFilter"
+    "name": "org.apache.dubbo.rpc.filter.ExecuteLimitFilter",
+    "allPublicMethods":true,
+    "allPublicConstructors":true
   },
   {
-    "name": "org.apache.dubbo.rpc.filter.GenericFilter",
-    "allPublicMethods": true,
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": []
-      }
-    ]
+    "name":"org.apache.dubbo.rpc.filter.GenericFilter",
+    "allPublicMethods":true,
+    "allPublicConstructors":true
   },
   {
-    "name": "org.apache.dubbo.rpc.filter.GenericImplFilter"
+    "name":"org.apache.dubbo.rpc.filter.GenericImplFilter"
+  },
+  {
+    "name":"org.apache.dubbo.rpc.filter.ProfilerServerFilter",
+    "allPublicMethods":true,
+    "allPublicConstructors":true
   },
   {
     "name": "org.apache.dubbo.rpc.filter.TimeoutFilter",
-    "allPublicMethods": true,
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": []
-      }
-    ]
+    "allPublicMethods":true,
+    "allPublicConstructors":true
   },
   {
     "name": "org.apache.dubbo.rpc.cluster.router.condition.ConditionRouterFactory"
@@ -2561,7 +2533,9 @@
     "methods": [
       {
         "name": "<init>",
-        "parameterTypes": []
+        "parameterTypes": [
+          "org.apache.zookeeper.client.ZKClientConfig"
+        ]
       }
     ]
   },
@@ -2674,5 +2648,9 @@
         "parameterTypes": []
       }
     ]
+  },
+  {
+    "name":"org.apache.dubbo.rpc.cluster.router.mesh.route.MeshRuleManager",
+    "allPublicConstructors":true
   }
 ]
